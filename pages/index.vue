@@ -6,11 +6,17 @@
 
 <script setup lang="ts">
 import Tasks from '~/components/organisms/Tasks.vue'
-const tasks = ref([
-  { id: 1, content: 'hello', active: true, order: 1 },
-  { id: 2, content: 'world', active: true, order: 2 },
-  { id: 3, content: 'done', active: false, order: 3 },
-])
+const { $taskRepository, $loading, $toast } = useNuxtApp()
+const tasks = ref([])
+try {
+  $loading.show()
+  const response = await $taskRepository.getTasks()
+  tasks.value = response.tasks
+} catch (error) {
+  $toast.error('タスクの取得に失敗しました')
+} finally {
+  $loading.hide()
+}
 </script>
 
 <style scoped>

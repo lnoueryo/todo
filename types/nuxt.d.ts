@@ -1,5 +1,5 @@
-// types/nuxt.d.ts
 import { ApiClient } from '~/plugins/api/api-client'
+import TaskRepository from '~/repositories/task.repository'
 
 declare module '#app' {
   interface NuxtApp {
@@ -16,6 +16,7 @@ declare module '#app' {
       error: (message: string) => void
     }
     $api: ApiClient
+    $taskRepository: TaskRepository
   }
 }
 
@@ -34,5 +35,6 @@ declare module 'vue' {
       error: (message: string) => void
     }
     $api: ApiClient
+    $taskRepository: TaskRepository
   }
 }

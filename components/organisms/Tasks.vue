@@ -11,20 +11,23 @@
 </template>
 
 <script setup lang="ts">
-import TextField from '~/components/atoms/TextField.vue'
-import Col from '~/components/atoms/Col.vue'
-import Checkbox from '~/components/atoms/Checkbox.vue'
 import Task from '~/components/molecules/Task.vue'
+type Task = {
+  id: number
+  content: string
+  active: boolean
+  order: number
+}
 const props = defineProps({
   tasks: {
-    type: Array,
+    type: Array as () => Task[],
     default: []
   }
 })
 const emits = defineEmits(['change:tasks'])
 const todoTasks = computed(() => props.tasks.filter(task => task.active))
 const doneTasks = computed(() => props.tasks.filter(task => task.active))
-const onChangeTask = (newTask) => {
+const onChangeTask = (newTask: Task) => {
   const tasks = props.tasks.map(task => {
     if (task.id === newTask.id) return newTask
     return task
