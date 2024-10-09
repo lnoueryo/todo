@@ -1,4 +1,5 @@
 import { ApiClient } from '~/plugins/api/api-client'
+import type { Auth } from 'firebase/auth'
 import TaskRepository from '~/repositories/task.repository'
 
 declare module '#app' {
@@ -16,7 +17,9 @@ declare module '#app' {
       error: (message: string) => void
     }
     $api: ApiClient
+    $auth: Auth
     $taskRepository: TaskRepository
+    $authRepository: AuthRepository
   }
 }
 
@@ -35,6 +38,8 @@ declare module 'vue' {
       error: (message: string) => void
     }
     $api: ApiClient
+    $auth: Auth
     $taskRepository: TaskRepository
+    $authRepository: AuthRepository
   }
 }
