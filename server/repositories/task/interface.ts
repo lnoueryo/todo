@@ -1,4 +1,4 @@
 import { TaskData } from '~/server/types/task'
 export type ITaskRepository = {
-  getTasks(): Promise<TaskData[]>
+  getTasksByUserId(id: string): Promise<TaskData[]>
 }

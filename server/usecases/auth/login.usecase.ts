@@ -6,6 +6,10 @@ export class LoginUseCase {
     id: string
     email: string
   }> {
-    return await this.authRepo.verifyIdToken(idToken)
+    try {
+      return await this.authRepo.verifyIdToken(idToken)
+    } catch (error) {
+      throw createError({ statusCode: 401, statusMessage: 'Unauthorized: Invalid or expired token' })
+    }
   }
 }
