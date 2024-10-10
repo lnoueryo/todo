@@ -34,7 +34,7 @@ import Button from '~/components/atoms/Button.vue'
 definePageMeta({
   layout: 'login'
 })
-const { $authRepository, $api } = useNuxtApp()
+const { $authRepository, $toast } = useNuxtApp()
 const router = useRouter()
 const form = ref({
   email: '',
@@ -60,7 +60,7 @@ const submit = async() => {
     await $authRepository.setCookie({ idToken })
     await router.push('/')
   } catch (error) {
-    console.error(error)
+    $toast.error('failed to login')
   } finally {
     loading.value = false
   }
