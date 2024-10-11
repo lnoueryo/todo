@@ -11,9 +11,12 @@ export default class CreateTaskInputDTO {
   task: CreateTaskInput
   user: User
 
-  constructor(task: CreateTaskInput & { id?: string }, user: User) {
+  constructor(task: Omit<CreateTaskInput, 'userId'> & { id?: string }, user: User) {
     const { id, ...rest } = task
-    this.task = rest
+    this.task = {
+      ...rest,
+      userId: user.id
+    }
     this.user = user
     this.validate()
   }

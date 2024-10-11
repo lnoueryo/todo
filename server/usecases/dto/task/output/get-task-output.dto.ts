@@ -2,7 +2,6 @@ import Task from "~/server/domain/entities/task"
 export class GetTaskOutputDTO {
   constructor(
     public id: string,
-    public userId: string,
     public content: string,
     public active: boolean,
     public order: number
@@ -14,7 +13,6 @@ export class GetTaskOutputDTO {
     }
     return new GetTaskOutputDTO(
       task.id,
-      task.userId,
       task.content,
       task.active,
       task.order
