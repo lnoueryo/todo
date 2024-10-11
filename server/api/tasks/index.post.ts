@@ -12,6 +12,7 @@ export default defineEventHandler(
     const taskRepository = new TaskRepository(fireStore)
     const interactor = new CreateTaskInteractor(taskRepository)
     const result = await interactor.execute(createTaskInput)
+    setResponseStatus(event, 201)
     return GetTaskPresenter.present(result)
   })
 )

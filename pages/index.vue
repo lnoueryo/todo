@@ -9,6 +9,7 @@
       :tasks="tasks"
       @change:tasks="tasks = $event"
       @blur:task="onBlurTask"
+      @click:delete="onClickDeleteTask"
     />
   </div>
 </template>
@@ -73,9 +74,18 @@ const createTask = async (newTask: Task) => {
   tasks.value = res.tasks
 }
 
-const updateTasks = async (newTask: Task) => {
-  const res = await $taskRepository.updateTasks([newTask])
+const updateTasks = async (task: Task) => {
+  const res = await $taskRepository.updateTasks([task])
   tasks.value = res.tasks
+}
+
+const deleteTask = async (task: Task) => {
+  const res = await $taskRepository.deleteTask(task)
+  tasks.value = res.tasks
+}
+
+const onClickDeleteTask = async (task: Task) => {
+  await deleteTask(task)
 }
 </script>
 

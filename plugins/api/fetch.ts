@@ -26,7 +26,7 @@ export default class Fetch implements ApiClient {
   patch(url: string, data: any, config?: Record<string, any>) {
     return this.request(url, { method: 'PATCH', body: data, ...config })
   }
-  delete(url: string, config?: Record<string, any>) {
-    return this.request(url, { method: 'DELETE', ...config })
+  delete(url: string, data: any, config?: Record<string, any>) {
+    return this.request(url, { method: 'DELETE', body: data, ...config })
   }
 }

@@ -20,10 +20,14 @@ export default class TaskRepository {
     return await this.api.post('/api/tasks', body)
   }
   async updateTasks(body: {
+    id: string
     content: string
     active: boolean
     order: number
   }[]): Promise<{ tasks: Task[] }> {
     return await this.api.patch('/api/tasks', body)
+  }
+  async deleteTask(body: { id: string }): Promise<{ tasks: Task[] }> {
+    return await this.api.delete('/api/tasks', body)
   }
 }

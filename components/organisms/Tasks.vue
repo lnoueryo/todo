@@ -1,16 +1,15 @@
 <template>
-  <form @submit.prevent="">
-    <TransitionGroup name="list" tag="div">
-      <div class="d-flex align-center" v-for="(task, i) in todoTasks" :key="i">
-        <Task
-          ref="taskRef"
-          v-bind="task"
-          @change:task="onChangeTask"
-          @blur:task="emits('blur:task', task)"
-        />
-      </div>
-    </TransitionGroup>
-  </form>
+  <TransitionGroup name="list" tag="div">
+    <div class="d-flex align-center" v-for="(task, i) in todoTasks" :key="i">
+      <Task
+        ref="taskRef"
+        v-bind="task"
+        @change:task="onChangeTask"
+        @blur:task="emits('blur:task', task)"
+        @click:delete="emits('click:delete', task)"
+      />
+    </div>
+  </TransitionGroup>
 </template>
 
 <script setup lang="ts">
@@ -25,6 +24,7 @@ const props = defineProps({
 const emits = defineEmits([
   'change:tasks',
   'blur:task',
+  'click:delete',
 ])
 const todoTasks = computed(() => props.tasks.filter(task => task.active))
 const doneTasks = computed(() => props.tasks.filter(task => task.active))

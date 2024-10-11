@@ -27,6 +27,35 @@ export class TaskRepository implements ITaskRepository  {
       })
     })
   }
+  async getTaskByUserId(id: string): Promise<Task | null> {
+    console.log('id', id)
+    const taskRef = this.fireStore.collection('tasks').doc(id)
+    const taskDoc = await taskRef.get()
+    if (!taskDoc.exists) {
+      return null
+    }
+    const taskData = taskDoc.data()
+    if (!taskData) {
+      return null
+    }
+    const {
+      active,
+      content,
+      order,
+      userId,
+      createdAt,
+      updatedAt,
+    } = taskData
+    return new Task({
+      id: taskDoc.id,
+      active,
+      content,
+      order,
+      userId,
+      createdAt,
+      updatedAt,
+    })
+  }
   async createTask(task: Task): Promise<Task> {
     const {
       userId,
@@ -54,5 +83,9 @@ export class TaskRepository implements ITaskRepository  {
       order: task.order,
       updatedAt: task.updatedAt,
     })
+  }
+  async deleteTask(id: string): Promise<void> {
+    const taskRef = this.fireStore.collection('tasks').doc(id)
+    await taskRef.delete()
   }
 }

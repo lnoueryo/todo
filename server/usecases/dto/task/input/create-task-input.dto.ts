@@ -9,7 +9,6 @@ export class CreateTaskInputDTO {
   user: User
 
   constructor(task: CreateTaskRequest, user: User) {
-    // const { id, ...rest } = task
     this.task = {
       ...task,
       userId: user.id

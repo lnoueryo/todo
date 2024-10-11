@@ -9,7 +9,7 @@
       :falseValue="true"
     />
   </Col>
-  <Col class="d-flex justify-center" md="11" sm="11">
+  <Col class="d-flex justify-center" md="10" sm="10">
     <TextField
       ref="textFieldRef"
       v-model="internalContent"
@@ -17,12 +17,26 @@
       @blur="emits('blur:task', $event)"
     />
   </Col>
+  <Menu icon="mdi-dots-vertical">
+    <List>
+      <ListItem
+        v-for="(item, index) in items"
+        :value="index"
+        @click="item.handler"
+      >
+        {{ item.title }}
+      </ListItem>
+    </List>
+  </Menu>
 </template>
 
 <script setup lang="ts">
 import TextField from '~/components/atoms/TextField.vue'
 import Col from '~/components/atoms/Col.vue'
 import Checkbox from '~/components/atoms/Checkbox.vue'
+import Menu from '~/components/atoms/Menu.vue'
+import List from '~/components/atoms/List.vue'
+import ListItem from '~/components/atoms/ListItem.vue'
 const props = defineProps({
   id: {
     type: String,
@@ -44,7 +58,8 @@ const props = defineProps({
 const emits = defineEmits([
   'change:task',
   'update:content',
-  'blur:task'
+  'blur:task',
+  'click:delete',
 ]);
 const internalActive = computed({
   get() {
@@ -64,6 +79,13 @@ const internalContent = computed({
     emits('change:task', task)
   }
 })
+
+const deleteTask = (e: Event) => {
+  emits('click:delete', e)
+}
+const items = ref([
+  { title: '削除', handler: deleteTask }
+])
 const textFieldRef = ref<typeof TextField | null>(null)
 const focusTextField = () => {
   if (textFieldRef.value) {

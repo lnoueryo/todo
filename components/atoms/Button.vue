@@ -4,13 +4,16 @@
     :variant="props.variant"
     :elevation="props.elevation"
     :color="props.color"
+    :icon="!!props.icon"
     :loading="props.loading"
   >
-    <slot />
+    <Icon v-if="props.icon">{{ props.icon }}</Icon>
+    <slot v-if="!props.icon" />
   </v-btn>
 </template>
 
 <script setup lang="ts">
+import Icon from '~/components/atoms/Icon.vue'
 type Variant = 'flat' | 'text' | 'elevated' | 'tonal' | 'outlined' | 'plain'
 const props = defineProps({
   type: {
@@ -28,6 +31,10 @@ const props = defineProps({
   color: {
     type: String,
     default: 'primary'
+  },
+  icon: {
+    type: String || undefined,
+    default: undefined
   },
   loading: {
     type: Boolean,
