@@ -19,4 +19,11 @@ export default class TaskRepository {
   }): Promise<{ tasks: Task[] }> {
     return await this.api.post('/api/tasks', body)
   }
+  async updateTasks(body: {
+    content: string
+    active: boolean
+    order: number
+  }[]): Promise<{ tasks: Task[] }> {
+    return await this.api.patch('/api/tasks', body)
+  }
 }

@@ -1,20 +1,17 @@
-import Task from '~/server/domain/entities/task'
+import { Task } from '~/server/domain/entities/task'
+import type { User } from '~/server/types/user'
 
-type CreateTaskInput = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>
+type CreateTaskInput = Omit<Task, 'createdAt' | 'updatedAt'>
+type CreateTaskRequest = Omit<Task, 'userId' | 'createdAt' | 'updatedAt'>
 
-type User = {
-  id: string
-  email: string
-}
-
-export default class CreateTaskInputDTO {
+export class CreateTaskInputDTO {
   task: CreateTaskInput
   user: User
 
-  constructor(task: Omit<CreateTaskInput, 'userId'> & { id?: string }, user: User) {
-    const { id, ...rest } = task
+  constructor(task: CreateTaskRequest, user: User) {
+    // const { id, ...rest } = task
     this.task = {
-      ...rest,
+      ...task,
       userId: user.id
     }
     this.user = user

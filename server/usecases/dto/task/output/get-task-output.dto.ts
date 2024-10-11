@@ -1,4 +1,4 @@
-import Task from "~/server/domain/entities/task"
+import { Task } from "~/server/domain/entities/task"
 export class GetTaskOutputDTO {
   constructor(
     public id: string,

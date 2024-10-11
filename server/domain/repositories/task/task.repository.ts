@@ -1,6 +1,6 @@
 import type { ITaskRepository } from './interface'
 import admin from 'firebase-admin'
-import Task from '~/server/domain/entities/task'
+import { Task } from '~/server/domain/entities/task'
 
 export class TaskRepository implements ITaskRepository  {
   constructor(private fireStore: admin.firestore.Firestore) {}
@@ -46,5 +46,13 @@ export class TaskRepository implements ITaskRepository  {
     })
     task.id = newTask.id
     return task
+  }
+  async updateTask(task: Task): Promise<admin.firestore.WriteResult> {
+    return this.fireStore.collection('tasks').doc(task.id).update({
+      content: task.content,
+      active: task.active,
+      order: task.order,
+      updatedAt: task.updatedAt,
+    })
   }
 }

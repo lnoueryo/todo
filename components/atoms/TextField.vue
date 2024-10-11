@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    ref="textFieldRef"
     v-model="text"
     :type="props.type"
     :label="props.label"
@@ -12,6 +13,7 @@
     :hide-details="props.hideDetails"
     :append-inner-icon="props.appendInnerIcon"
     @click:appendInner="emits('click:appendInner', $event)"
+    @blur="emits('blur', $event)"
   />
 </template>
 
@@ -67,6 +69,7 @@ const props = defineProps({
 const emits = defineEmits([
   'update:modelValue',
   'click:appendInner',
+  'blur',
 ])
 const text = computed({
   get() {
@@ -75,6 +78,15 @@ const text = computed({
   set(v) {
     emits('update:modelValue', v)
   }
+})
+const textFieldRef = ref<HTMLInputElement | null>(null)
+const focus = () => {
+  if (textFieldRef.value) {
+    textFieldRef.value.focus()
+  }
+}
+defineExpose({
+  focus
 })
 </script>
 

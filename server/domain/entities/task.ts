@@ -1,14 +1,14 @@
-export default class Task {
-  public id: string | undefined
+export class Task {
+  public id: string
   public userId: string
   public content: string
   public active: boolean
   public order: number
-  public createdAt: Date = new Date()
-  public updatedAt: Date = new Date()
+  public createdAt: Date
+  public updatedAt: Date
   constructor(params: {
-    id?: string | undefined
-    userId: string
+    id: string
+    userId?: string
     content: string
     active: boolean
     order: number
@@ -16,7 +16,7 @@ export default class Task {
     updatedAt?: Date
   }) {
     this.id = params.id
-    this.userId = params.userId
+    this.userId = params.userId ?? ''
     this.content = params.content
     this.active = params.active
     this.order = params.order
