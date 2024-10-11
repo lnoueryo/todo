@@ -1,9 +1,9 @@
-import { H3Event, getCookie } from 'h3'
-import { createError } from 'h3'
+import type { H3Event } from 'h3'
 import { auth } from '~/server/libs/firebase-admin'
-import { AuthRepository } from '../repositories/auth/auth.repository'
+import { AuthRepository } from '~/server/domain/repositories/auth/auth.repository'
+import type { User } from '~/server/types/user'
 
-export const AuthDecorator = (handler: (event: H3Event, user: { id: string, email: string}) => any) => {
+export const AuthDecorator = (handler: (event: H3Event, user: User) => any) => {
   return async (event: H3Event) => {
     const idToken = getCookie(event, 'idToken')
     if (!idToken) {

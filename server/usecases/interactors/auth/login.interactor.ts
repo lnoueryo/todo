@@ -1,8 +1,8 @@
-import { AuthRepository } from '~/server/repositories/auth/auth.repository'
+import { AuthRepository } from '~/server/domain/repositories/auth/auth.repository'
 
-export class LoginUseCase {
+export class LoginInteractor {
   constructor(private authRepo: AuthRepository) {}
-  public async do(idToken: string): Promise<{
+  public async execute(idToken: string): Promise<{
     id: string
     email: string
   }> {
