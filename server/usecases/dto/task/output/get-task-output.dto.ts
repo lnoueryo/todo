@@ -1,4 +1,4 @@
-import { Task } from "~/server/domain/entities/task"
+import type { ITask } from '~/server/domain/entities/task'
 export class GetTaskOutputDTO {
   constructor(
     public id: string,
@@ -7,7 +7,7 @@ export class GetTaskOutputDTO {
     public order: number
   ) {}
 
-  public static fromEntity(task: Task): GetTaskOutputDTO {
+  public static fromEntity(task: ITask): GetTaskOutputDTO {
     if (!task.id) {
       throw new Error('Task must have an ID to be converted to GetTaskOutput');
     }
@@ -19,7 +19,7 @@ export class GetTaskOutputDTO {
     )
   }
 
-  public static fromEntities(tasks: Task[]): GetTaskOutputDTO[] {
+  public static fromEntities(tasks: ITask[]): GetTaskOutputDTO[] {
     return tasks.map(task => GetTaskOutputDTO.fromEntity(task))
   }
 }

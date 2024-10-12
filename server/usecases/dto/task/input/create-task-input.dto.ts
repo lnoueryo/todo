@@ -1,8 +1,8 @@
-import { Task } from '~/server/domain/entities/task'
+import type { ITask } from '~/server/domain/entities/task'
 import type { User } from '~/server/types/user'
 
-type CreateTaskInput = Omit<Task, 'createdAt' | 'updatedAt'>
-type CreateTaskRequest = Omit<Task, 'userId' | 'createdAt' | 'updatedAt'>
+type CreateTaskInput = Omit<ITask, 'createdAt' | 'updatedAt'>
+type CreateTaskRequest = Omit<ITask, 'userId' | 'createdAt' | 'updatedAt'>
 
 export class CreateTaskInputDTO {
   task: CreateTaskInput

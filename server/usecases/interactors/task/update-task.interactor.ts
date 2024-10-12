@@ -6,6 +6,14 @@ import { UpdateTaskInputDTO } from '~/server/usecases/dto/task/input/update-task
 export class UpdateTaskInteractor {
   constructor(private taskRepo: TaskRepository) {}
   public async execute(updateTaskInput: UpdateTaskInputDTO): Promise<GetTaskOutputDTO[]> {
+    const targetTasks = await this.taskRepo.getTasksByIds(updateTaskInput.taskIds)
+    const areTasksCurrentUsers = targetTasks.every((task) => task.isCurrentUserTask(updateTaskInput.user))
+    if (!areTasksCurrentUsers) {
+      console.warn("tasks are not current user's")
+      throw createError({
+        status: 400
+      })
+    }
     const updateTasks = updateTaskInput.tasks.map((task) => {
       const newTask = new Task(task)
       return this.taskRepo.updateTask(newTask)

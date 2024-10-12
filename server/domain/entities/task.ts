@@ -1,4 +1,16 @@
-export class Task {
+import { User } from '~/server/types/user'
+
+export interface ITask {
+  id: string
+  userId: string
+  content: string
+  active: boolean
+  order: number
+  createdAt: Date
+  updatedAt: Date
+}
+
+export class Task implements ITask {
   public id: string
   public userId: string
   public content: string
@@ -22,5 +34,8 @@ export class Task {
     this.order = params.order
     this.createdAt = params.createdAt || new Date()
     this.updatedAt = params.updatedAt || new Date()
+  }
+  isCurrentUserTask(user: User) {
+    return this.userId = user.id
   }
 }

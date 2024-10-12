@@ -1,15 +1,17 @@
-import { Task } from '~/server/domain/entities/task'
+import type { ITask } from '~/server/domain/entities/task'
 import type { User } from '~/server/types/user'
 
-type UpdateTaskRequest = Omit<Task, 'userId' | 'createdAt' | 'updatedAt'>
+type UpdateTaskRequest = Omit<ITask, 'userId' | 'createdAt' | 'updatedAt'>
 type UpdateTaskProcessedData = UpdateTaskRequest & { updatedAt: Date }
 
 export class UpdateTaskInputDTO {
   tasks: UpdateTaskProcessedData[]
+  taskIds: string[]
   user: User
 
   constructor(tasks: UpdateTaskProcessedData[], user: User) {
     this.tasks = tasks
+    this.taskIds = tasks.map((task) => task.id)
     this.user = user
     this.validate()
   }

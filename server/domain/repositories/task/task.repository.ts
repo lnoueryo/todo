@@ -27,8 +27,30 @@ export class TaskRepository implements ITaskRepository  {
       })
     })
   }
+  async getTasksByIds(ids: string[]): Promise<Task[]> {
+    const tasksRef = this.fireStore.collection('tasks').orderBy('order')
+    const snapshot = await tasksRef.where(admin.firestore.FieldPath.documentId(), 'in', ids).get()
+    return snapshot.docs.map(doc => {
+      const {
+        active,
+        content,
+        order,
+        userId,
+        createdAt,
+        updatedAt,
+      } = doc.data()
+      return new Task({
+        id: doc.id,
+        active,
+        content,
+        order,
+        userId,
+        createdAt,
+        updatedAt,
+      })
+    })
+  }
   async getTaskByUserId(id: string): Promise<Task | null> {
-    console.log('id', id)
     const taskRef = this.fireStore.collection('tasks').doc(id)
     const taskDoc = await taskRef.get()
     if (!taskDoc.exists) {

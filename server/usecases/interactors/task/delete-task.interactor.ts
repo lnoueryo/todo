@@ -1,5 +1,4 @@
 import { TaskRepository } from '~/server/domain/repositories/task/task.repository'
-import { Task } from '~/server/domain/entities/task'
 import { DeleteTaskInputDTO } from '~/server/usecases/dto/task/input/delete-task-input'
 import { GetTaskOutputDTO } from '~/server/usecases/dto/task/output/get-task-output.dto'
 
@@ -13,7 +12,7 @@ export class DeleteTaskInteractor {
         statusMessage: 'Not Found',
       })
     }
-    if (task.userId !== deleteTaskInput.user.id) {
+    if (!task.isCurrentUserTask(deleteTaskInput.user)) {
       throw createError({
         statusCode: 400
       })
