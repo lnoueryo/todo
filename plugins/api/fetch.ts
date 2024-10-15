@@ -1,4 +1,5 @@
 import type { ApiClient } from './api-client'
+import type { User } from 'firebase/auth'
 
 export default class Fetch implements ApiClient {
   private client: typeof $fetch
@@ -10,9 +11,20 @@ export default class Fetch implements ApiClient {
       return await this.client(url, config)
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
-        console.log('Unauthorized, redirecting to login...')
-        const router = useRouter()
-        return await router.push('/login')
+        const { $auth, $authRepository } = useNuxtApp()
+        const user = await new Promise<User | null>(async (resolve, reject) => {
+          await $auth.onAuthStateChanged(async (user) => resolve(user))
+        })
+        if (!user) {
+          return navigateTo('/login')
+        }
+        try {
+          const idToken = await user.getIdToken(true)
+          await $authRepository.setCookie({ idToken })
+          return await this.client(url, config)
+        } catch (error) {
+          return navigateTo('/login')
+        }
       }
       throw error
     }

@@ -1,40 +1,84 @@
 <template>
-  <TransitionGroup name="list" tag="div">
-    <div class="d-flex align-center" v-for="(task, i) in todoTasks" :key="i">
+  <VueDraggable
+    v-model="internalTasks"
+    :delay="80"
+    ref="el"
+  >
+    <div class="d-flex align-center" v-for="(task, i) in internalTasks" :key="i">
       <Task
         ref="taskRef"
         v-bind="task"
+        :items="todoTasksMenu"
+        :check="props.check"
+        :readonly="props.readonly"
         @change:task="onChangeTask"
-        @blur:task="emits('blur:task', task)"
-        @click:delete="emits('click:delete', task)"
+        @blur:task="emits('blur:task', $event)"
+        @click:delete="emits('click:delete', [task])"
       />
     </div>
-  </TransitionGroup>
+  </VueDraggable>
 </template>
 
 <script setup lang="ts">
 import Task from '~/components/molecules/Task.vue'
 import type { Task as TaskType } from '~/repositories/task.repository'
+import { VueDraggable } from 'vue-draggable-plus'
 const props = defineProps({
   tasks: {
     type: Array as () => TaskType[],
     default: []
+  },
+  check: {
+    type: Boolean,
+    default: true
+  },
+  readonly: {
+    type: Boolean,
+    default: false
+  },
+  draggable: {
+    type: String,
+    default: ''
+  },
+  items: {
+    type: Array as () => { title: string, handler: (task: TaskType) => void}[],
+    default: () => []
   }
 })
 const emits = defineEmits([
   'change:tasks',
   'blur:task',
   'click:delete',
+  'drag:task',
 ])
-const todoTasks = computed(() => props.tasks.filter(task => task.active))
-const doneTasks = computed(() => props.tasks.filter(task => task.active))
+
+const internalTasks = computed({
+  get() {
+    return props.tasks
+  },
+  set(v) {
+    emits('drag:task', v)
+  }
+})
+
 const onChangeTask = (newTask: TaskType) => {
-  const tasks = props.tasks.map(task => {
+  const newTasks = props.tasks.map(task => {
     if (task.id === newTask.id) return newTask
     return task
   })
-  emits('change:tasks', tasks)
+  emits('change:tasks', newTasks)
 }
+const deleteTask = (task: TaskType) => {
+  emits('click:delete', [task])
+}
+const todoTasksMenu = computed(() => {
+  if (props.items.length !== 0) {
+    return props.items
+  }
+  return [
+    { title: 'Delete', handler: deleteTask }
+  ]
+})
 const taskRef = ref<typeof Task[] | null>([])
 const focusTask = () => {
   if (!taskRef.value) {

@@ -8,7 +8,7 @@ import { DeleteTaskInputDTO } from '~/server/usecases/dto/task/input/delete-task
 export default defineEventHandler(
   AuthDecorator(async(event, user) => {
     const body = await readBody(event)
-    const deleteTaskInput = new DeleteTaskInputDTO(body.id, user)
+    const deleteTaskInput = new DeleteTaskInputDTO(body, user)
     const taskRepository = new TaskRepository(fireStore)
     const interactor = new DeleteTaskInteractor(taskRepository)
     const result = await interactor.execute(deleteTaskInput)

@@ -8,6 +8,7 @@
     :variant="props.variant"
     :clearable="props.clearable"
     :error="props.error"
+    :readonly="props.readonly"
     :error-messages="props.errorMessages"
     :rules="props.rules"
     :hide-details="props.hideDetails"
@@ -52,6 +53,10 @@ const props = defineProps({
   hideDetails: {
     type: Boolean,
     default: true
+  },
+  readonly: {
+    type: Boolean,
+    default: false
   },
   rules: {
     type: Array as () => Rule[],

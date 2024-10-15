@@ -1,11 +1,11 @@
 import type { User } from '~/server/types/user'
 
 export class DeleteTaskInputDTO {
-  id: string
+  ids: string[]
   user: User
 
-  constructor(id: string, user: User) {
-    this.id = id
+  constructor(tasks: { id: string }[], user: User) {
+    this.ids = tasks.map(task => task.id)
     this.user = user
   }
 }

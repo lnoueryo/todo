@@ -6,6 +6,7 @@
     :color="props.color"
     :icon="!!props.icon"
     :loading="props.loading"
+    :prepend-icon="props.prependIcon"
   >
     <Icon v-if="props.icon">{{ props.icon }}</Icon>
     <slot v-if="!props.icon" />
@@ -26,11 +27,15 @@ const props = defineProps({
   },
   elevation: {
     type: String,
-    default: '3'
+    default: '2'
   },
   color: {
     type: String,
     default: 'primary'
+  },
+  prependIcon: {
+    type: String || undefined,
+    default: undefined
   },
   icon: {
     type: String || undefined,

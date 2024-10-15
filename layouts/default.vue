@@ -24,9 +24,4 @@ import Card from '~/components/atoms/Card.vue'
     flex: 1;
     padding: 48px 0;
   }
-
-  .page-container {
-    display: flex;
-    flex: 1;
-  }
 </style>

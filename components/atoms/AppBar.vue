@@ -11,7 +11,7 @@ const props = defineProps({
     default: 'primary'
   },
   density: {
-    type: String,
+    type: String as () => 'default' | 'comfortable' | 'compact' || undefined,
     default: 'compact'
   },
   title: {

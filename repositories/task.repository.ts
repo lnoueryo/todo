@@ -27,7 +27,7 @@ export default class TaskRepository {
   }[]): Promise<{ tasks: Task[] }> {
     return await this.api.patch('/api/tasks', body)
   }
-  async deleteTask(body: { id: string }): Promise<{ tasks: Task[] }> {
+  async deleteTask(body: { id: string }[]): Promise<{ tasks: Task[] }> {
     return await this.api.delete('/api/tasks', body)
   }
 }

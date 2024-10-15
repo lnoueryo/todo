@@ -1,5 +1,5 @@
 <template>
-  <Col class="d-flex justify-center" md="1" sm="1">
+  <Col class="d-flex justify-center" cols="1" md="1" sm="1" v-if="props.check">
     <Checkbox
       v-model="internalActive"
       hoverIconColor="#1967c0"
@@ -9,20 +9,23 @@
       :falseValue="true"
     />
   </Col>
-  <Col class="d-flex justify-center" md="10" sm="10">
+  <Col class="d-flex justify-center" :cols="props.check ? '10' : '11'" :md="props.check ? '10' : '11'" :sm="props.check ? '10' : '11'">
     <TextField
       ref="textFieldRef"
+      variant="filled"
       v-model="internalContent"
-      clearable
-      @blur="emits('blur:task', $event)"
+      :clearable="!props.readonly"
+      :readonly="props.readonly"
+      @blur="emits('blur:task', task)"
+      @click="emits('click:task', task)"
     />
   </Col>
-  <Menu icon="mdi-dots-vertical">
+  <Menu icon="mdi-dots-vertical" v-if="items.length !== 0">
     <List>
       <ListItem
         v-for="(item, index) in items"
         :value="index"
-        @click="item.handler"
+        @click="item.handler(task)"
       >
         {{ item.title }}
       </ListItem>
@@ -54,20 +57,35 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  items: {
+    type: Array as () => {
+      title: string,
+      handler: (e: any) => void
+    }[],
+    default: []
+  },
+  check: {
+    type: Boolean,
+    default: true
+  },
+  readonly: {
+    type: Boolean,
+    default: false
+  },
 })
+
 const emits = defineEmits([
+  'click:task',
   'change:task',
-  'update:content',
   'blur:task',
-  'click:delete',
 ]);
 const internalActive = computed({
   get() {
     return props.active
   },
   set(active) {
-    const task = reactive({ ...props, active })
-    emits('change:task', task)
+    const newTask = reactive({ ...task.value, active, order: -1 })
+    emits('blur:task', newTask)
   }
 })
 const internalContent = computed({
@@ -75,17 +93,19 @@ const internalContent = computed({
     return props.content
   },
   set(content) {
-    const task = reactive({ ...props, content })
-    emits('change:task', task)
+    const newTask = reactive({ ...task.value, content })
+    emits('change:task', newTask)
   }
 })
-
-const deleteTask = (e: Event) => {
-  emits('click:delete', e)
-}
-const items = ref([
-  { title: '削除', handler: deleteTask }
-])
+const task = computed(() => {
+  const {
+    items,
+    check,
+    readonly,
+    ...rest
+  } = props
+  return rest
+})
 const textFieldRef = ref<typeof TextField | null>(null)
 const focusTextField = () => {
   if (textFieldRef.value) {

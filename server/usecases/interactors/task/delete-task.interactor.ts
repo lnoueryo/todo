@@ -5,19 +5,18 @@ import { GetTaskOutputDTO } from '~/server/usecases/dto/task/output/get-task-out
 export class DeleteTaskInteractor {
   constructor(private taskRepo: TaskRepository) {}
   public async execute(deleteTaskInput: DeleteTaskInputDTO): Promise<GetTaskOutputDTO[]> {
-    const task = await this.taskRepo.getTaskByUserId(deleteTaskInput.id)
-    if (!task) {
+    const targetTasks = await this.taskRepo.getTasksByIds(deleteTaskInput.ids)
+    const areTasksCurrentUsers = targetTasks.every((task) => task.isCurrentUserTask(deleteTaskInput.user))
+    if (!areTasksCurrentUsers) {
+      console.warn("tasks are not current user's")
       throw createError({
-        statusCode: 404,
-        statusMessage: 'Not Found',
+        status: 400
       })
     }
-    if (!task.isCurrentUserTask(deleteTaskInput.user)) {
-      throw createError({
-        statusCode: 400
-      })
-    }
-    await this.taskRepo.deleteTask(deleteTaskInput.id)
+    const deleteTasks = deleteTaskInput.ids.map((id) => {
+      return this.taskRepo.deleteTask(id)
+    })
+    await Promise.all(deleteTasks)
     const tasks = await this.taskRepo.getTasksByUserId(deleteTaskInput.user.id)
     return GetTaskOutputDTO.fromEntities(tasks)
   }
