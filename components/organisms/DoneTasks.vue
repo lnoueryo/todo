@@ -11,7 +11,7 @@
     </template>
     <template #text>
       <template v-if="doneTasks.length === 0">
-        No Done Task Now
+        <p class="px-4">No Done Task Now</p>
       </template>
       <template v-else>
         <Col class="d-flex">

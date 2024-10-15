@@ -28,6 +28,9 @@
       </template>
       <template #text>
         Is it ok to delete task?
+        <ul class="px-4">
+          <li v-for="deleteTask in deleteTasksCache">{{ deleteTask.content }}</li>
+        </ul>
       </template>
       <template #actions>
         <Spacer />

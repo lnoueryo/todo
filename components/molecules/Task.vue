@@ -10,15 +10,17 @@
     v-if="props.check"
   />
   <div class="d-flex justify-center pl-4" style="width: 100%;">
-    <TextField
+    <TextArea
       ref="textFieldRef"
+      v-model="internalContent"
       variant="filled"
       density="comfortable"
-      v-model="internalContent"
       :clearable="!props.readonly"
       :readonly="props.readonly"
       @blur="emits('blur:task', task)"
       @click="emits('click:task', task)"
+      rows="1"
+      auto-grow
     />
   </div>
   <div class="px-1">
@@ -38,11 +40,11 @@
 
 <script setup lang="ts">
 import TextField from '~/components/atoms/TextField.vue'
-import Col from '~/components/atoms/Col.vue'
 import Checkbox from '~/components/atoms/Checkbox.vue'
 import Menu from '~/components/atoms/Menu.vue'
 import List from '~/components/atoms/List.vue'
 import ListItem from '~/components/atoms/ListItem.vue'
+import TextArea from '~/components/atoms/TextArea.vue'
 const props = defineProps({
   id: {
     type: String,
