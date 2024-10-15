@@ -1,36 +1,39 @@
 <template>
-  <Col class="d-flex justify-center" cols="1" md="1" sm="1" v-if="props.check">
-    <Checkbox
-      v-model="internalActive"
-      hoverIconColor="#1967c0"
-      hoverIcon="$checkboxOn"
-      hover
-      :trueValue="false"
-      :falseValue="true"
-    />
-  </Col>
-  <Col class="d-flex justify-center" :cols="props.check ? '10' : '11'" :md="props.check ? '10' : '11'" :sm="props.check ? '10' : '11'">
+  <Checkbox
+    v-model="internalActive"
+    class="d-flex justify-center"
+    hoverIconColor="#1967c0"
+    hoverIcon="$checkboxOn"
+    hover
+    :trueValue="false"
+    :falseValue="true"
+    v-if="props.check"
+  />
+  <div class="d-flex justify-center pl-4" style="width: 100%;">
     <TextField
       ref="textFieldRef"
       variant="filled"
+      density="comfortable"
       v-model="internalContent"
       :clearable="!props.readonly"
       :readonly="props.readonly"
       @blur="emits('blur:task', task)"
       @click="emits('click:task', task)"
     />
-  </Col>
-  <Menu icon="mdi-dots-vertical" v-if="items.length !== 0">
-    <List>
-      <ListItem
-        v-for="(item, index) in items"
-        :value="index"
-        @click="item.handler(task)"
-      >
-        {{ item.title }}
-      </ListItem>
-    </List>
-  </Menu>
+  </div>
+  <div class="px-1">
+    <Menu icon="mdi-dots-vertical" v-if="items.length !== 0">
+      <List>
+        <ListItem
+          v-for="(item, index) in items"
+          :value="index"
+          @click="item.handler(task)"
+        >
+          {{ item.title }}
+        </ListItem>
+      </List>
+    </Menu>
+  </div>
 </template>
 
 <script setup lang="ts">

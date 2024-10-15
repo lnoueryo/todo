@@ -4,7 +4,7 @@
     :delay="80"
     ref="el"
   >
-    <div class="d-flex align-center" v-for="(task, i) in internalTasks" :key="i">
+    <Col class="d-flex align-center" v-for="(task, i) in internalTasks" :key="i">
       <Task
         ref="taskRef"
         v-bind="task"
@@ -15,12 +15,13 @@
         @blur:task="emits('blur:task', $event)"
         @click:delete="emits('click:delete', [task])"
       />
-    </div>
+    </Col>
   </VueDraggable>
 </template>
 
 <script setup lang="ts">
 import Task from '~/components/molecules/Task.vue'
+import Col from '~/components/atoms/Col.vue'
 import type { Task as TaskType } from '~/repositories/task.repository'
 import { VueDraggable } from 'vue-draggable-plus'
 const props = defineProps({
@@ -41,8 +42,8 @@ const props = defineProps({
     default: ''
   },
   items: {
-    type: Array as () => { title: string, handler: (task: TaskType) => void}[],
-    default: () => []
+    type: Array as () => { title: string, handler: (task: TaskType) => void}[] || undefined,
+    default: undefined
   }
 })
 const emits = defineEmits([
@@ -72,7 +73,7 @@ const deleteTask = (task: TaskType) => {
   emits('click:delete', [task])
 }
 const todoTasksMenu = computed(() => {
-  if (props.items.length !== 0) {
+  if (props.items) {
     return props.items
   }
   return [

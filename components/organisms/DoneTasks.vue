@@ -1,5 +1,5 @@
 <template>
-  <BasicDialog v-model="isOpen">
+  <BasicDialog v-model="isOpen" textClass="px-0">
     <template #activator="{ props }">
       <Button
         v-bind="props"
@@ -8,18 +8,20 @@
     </template>
     <template #title>
       Done Tasks
-      <v-spacer />
-      <Button
-        color="error"
-        variant="flat"
-        @click="emits('click:delete', doneTasks)"
-      >delete all</Button>
     </template>
     <template #text>
       <template v-if="doneTasks.length === 0">
         No Done Task Now
       </template>
       <template v-else>
+        <Col class="d-flex">
+          <Spacer />
+          <Button
+            color="error"
+            variant="flat"
+            @click="emits('click:delete', doneTasks)"
+          >delete all</Button>
+        </Col>
         <Tasks
           :tasks="doneTasks"
           :check="false"
@@ -40,6 +42,7 @@
 </template>
 
 <script setup lang="ts">
+import Col from '~/components/atoms/Col.vue'
 import Spacer from '~/components/atoms/Spacer.vue'
 import Button from '~/components/atoms/Button.vue'
 import BasicDialog from '~/components/molecules/BasicDialog.vue'

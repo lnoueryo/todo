@@ -10,7 +10,7 @@
             <slot name="title" />
           </CardTitle>
         </ToolBar>
-        <CardText>
+        <CardText :class="props.textClass">
           <slot name="text" />
         </CardText>
         <CardActions>
@@ -45,7 +45,11 @@ const props = defineProps({
   headerColor: {
     type: String,
     default: 'primary'
-  }
+  },
+  textClass: {
+    type: String,
+    default: ''
+  },
 })
 const emits = defineEmits([
   'update:modelValue'

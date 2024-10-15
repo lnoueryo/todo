@@ -12,6 +12,7 @@
     :error-messages="props.errorMessages"
     :rules="props.rules"
     :hide-details="props.hideDetails"
+    :density="props.density"
     :append-inner-icon="props.appendInnerIcon"
     @click:appendInner="emits('click:appendInner', $event)"
     @blur="emits('blur', $event)"
@@ -20,6 +21,7 @@
 
 <script setup lang="ts">
 type Variant = 'outlined' | 'filled' | 'underlined' | 'plain' | 'solo' | 'solo-inverted' | 'solo-filled'
+type Density = 'default' | 'comfortable' | 'compact'
 type Rule = (v: string) => boolean | string
 const props = defineProps({
   modelValue: {
@@ -33,6 +35,10 @@ const props = defineProps({
   color: {
     type: String,
     default: 'primary'
+  },
+  density: {
+    type: String as () => Density || undefined,
+    default: 'default'
   },
   label: {
     type: String,
