@@ -1,6 +1,6 @@
 <template>
   <v-app-bar :color="props.color" :density="props.density">
-    <v-app-bar-title>{{ props.title }}</v-app-bar-title>
+    <slot />
   </v-app-bar>
 </template>
 
@@ -13,10 +13,6 @@ const props = defineProps({
   density: {
     type: String as () => 'default' | 'comfortable' | 'compact' || undefined,
     default: 'compact'
-  },
-  title: {
-    type: String,
-    default: ''
   },
 })
 </script>
