@@ -1,7 +1,9 @@
 <template>
   <div>
     <AppBar>
-      <AppBarTitle>{{ props.title }}</AppBarTitle>
+      <AppBarTitle>
+        <h1 class="text-h5">{{ props.title }}</h1>
+      </AppBarTitle>
       <Spacer />
       <Menu icon="mdi-dots-vertical">
         <List>

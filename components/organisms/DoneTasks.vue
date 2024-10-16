@@ -7,7 +7,7 @@
       >Done Task</Button>
     </template>
     <template #title>
-      Done Tasks
+      <h3>Done Tasks</h3>
     </template>
     <template #text>
       <template v-if="doneTasks.length === 0">

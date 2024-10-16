@@ -24,10 +24,10 @@
     </div>
     <BasicDialog v-model="isOpen" persistent headerColor="error">
       <template #title>
-        Delete Task
+        <h3>Delete Task</h3>
       </template>
       <template #text>
-        Is it ok to delete task?
+        <p>Is it ok to delete task?</p>
         <ul class="px-4">
           <li v-for="deleteTask in deleteTasksCache">{{ deleteTask.content }}</li>
         </ul>
