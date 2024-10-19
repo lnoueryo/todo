@@ -10,16 +10,19 @@ export const useTaskStore = defineStore(
     const { $taskRepository } = useNuxtApp()
     const todoTasks = computed(() => tasks.value.filter(task => task.active))
     const doneTasks = computed(() =>tasks.value.filter(task => !task.active))
+
     const addTask = async () => {
       isCreatingMode.value = true
+      const order = tasks.value.length === 0 ? 1 : tasks.value[tasks.value.length - 1].order + 1
       const newTask = {
         id: '',
         content: '',
         active: true,
-        order: tasks.value[tasks.value.length - 1].order + 1
+        order
       }
       await tasks.value.push(newTask)
     }
+
     const getTasks = async () => {
       const response = await $taskRepository.getTasks()
       tasks.value = response.tasks
@@ -30,6 +33,7 @@ export const useTaskStore = defineStore(
     }
 
     const updateTasks = async (updateTasks: Task[]) => {
+      console.log(updateTasks)
       const res = await $taskRepository.updateTasks(updateTasks)
       tasks.value = res.tasks
     }

@@ -1,3 +1,4 @@
+import { ValidationError } from '~/server/application/shared/validation-error'
 import type { ITask } from '~/server/domain/entities/task'
 import type { User } from '~/server/types/user'
 
@@ -19,7 +20,7 @@ export class UpdateTaskInputDTO {
   validate() {
     for (const task of this.tasks) {
       if (!task.order) {
-        throw new Error('Task order is required');
+        throw new ValidationError('Task order is required')
       }
     }
   }
@@ -31,13 +32,13 @@ export class UpdateTaskInputDTO {
       active: task.active,
       order: task.order,
       updatedAt: new Date(),
-    };
+    }
   }
 
   public static fromRequestArray(tasks: UpdateTaskRequest[], user: User): UpdateTaskInputDTO {
     return new UpdateTaskInputDTO(
       tasks.map(task => UpdateTaskInputDTO.fromRequest(task)),
       user
-    );
+    )
   }
 }

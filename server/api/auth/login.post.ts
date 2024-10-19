@@ -5,12 +5,12 @@ import { auth } from '~/server/libs/firebase-admin'
 export default defineEventHandler(async(event) => {
   const body = await readBody(event)
   const authRepo = new AuthRepository(auth)
-  const interactor = new LoginUsecase(authRepo)
-  const result = await interactor.execute(body.idToken)
+  const usecase = new LoginUsecase(authRepo)
+  await usecase.execute(body.idToken)
   setCookie(event, 'idToken', body.idToken, {
     httpOnly: true,
     secure: true,
-    maxAge: 60 * 60 * 24,  // 1日間有効
+    maxAge: 60 * 60 * 24,
     path: '/',
   })
 })

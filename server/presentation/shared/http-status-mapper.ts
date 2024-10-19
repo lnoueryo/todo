@@ -1,4 +1,4 @@
-import { CommonErrorCode } from '~/server/infrastructure/shared/error-code'
+import { CommonErrorCode } from '~/server/types'
 
 
 export function getHttpStatus(code: CommonErrorCode): number {

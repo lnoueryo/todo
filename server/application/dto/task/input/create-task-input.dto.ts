@@ -1,3 +1,4 @@
+import { ValidationError } from '~/server/application/shared/validation-error'
 import type { ITask } from '~/server/domain/entities/task'
 import type { User } from '~/server/types/user'
 
@@ -21,7 +22,7 @@ export class CreateTaskInputDTO {
     for (const key in this.task) {
       const value = this.task[key as keyof CreateTaskInput]
       if (value === null || value === undefined) {
-        throw new Error(`${key} is required`)
+        throw new ValidationError(`${key} is required`)
       }
     }
   }
