@@ -1,4 +1,4 @@
-import Task from '~/server/entities/task'
+import { Task } from '~/server/domain/entities/task'
 import admin from 'firebase-admin'
 export type ITaskRepository = {
   getTasksByUserId(id: string): Promise<Task[]>
