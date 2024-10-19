@@ -1,11 +1,11 @@
 import { AuthRepository } from '~/server/infrastructure/auth/auth.repository'
-import { LoginInteractor } from '~/server/application/usecases/auth/login.usecase'
+import { LoginUsecase } from '~/server/application/usecases/auth/login.usecase'
 import { auth } from '~/server/libs/firebase-admin'
 
 export default defineEventHandler(async(event) => {
   const body = await readBody(event)
   const authRepo = new AuthRepository(auth)
-  const interactor = new LoginInteractor(authRepo)
+  const interactor = new LoginUsecase(authRepo)
   const result = await interactor.execute(body.idToken)
   setCookie(event, 'idToken', body.idToken, {
     httpOnly: true,

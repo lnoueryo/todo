@@ -3,7 +3,7 @@ import { Task } from '~/server/domain/entities/task'
 import { GetTaskOutputDTO } from '~/server/application/dto/task/output/get-task-output.dto'
 import { UpdateTaskInputDTO } from '~/server/application/dto/task/input/update-task-input.dto'
 
-export class UpdateTaskInteractor {
+export class UpdateTaskUsecase {
   constructor(private taskRepo: TaskRepository) {}
   public async execute(updateTaskInput: UpdateTaskInputDTO): Promise<GetTaskOutputDTO[]> {
     const targetTasks = await this.taskRepo.getTasksByIds(updateTaskInput.taskIds)
