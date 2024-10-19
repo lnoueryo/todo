@@ -12,6 +12,6 @@ export default defineEventHandler(
     const usecase = new DeleteTaskUsecase(taskRepository)
     const result = await usecase.execute(deleteTaskInput)
     setResponseStatus(event, 202)
-    return { tasks: result}
+    return { tasks: result }
   })
 )

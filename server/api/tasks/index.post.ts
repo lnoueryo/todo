@@ -12,6 +12,6 @@ export default defineEventHandler(
     const usecase = new CreateTaskUsecase(taskRepository)
     const result = await usecase.execute(createTaskInput)
     setResponseStatus(event, 201)
-    return { tasks: result}
+    return { tasks: result }
   })
 )

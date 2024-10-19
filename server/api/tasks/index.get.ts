@@ -8,6 +8,6 @@ export default defineEventHandler(
     const taskRepository = new TaskRepository(fireStore)
     const usecase = new GetTaskUsecase(taskRepository)
     const result = await usecase.execute(user)
-    return { tasks: result}
+    return { tasks: result }
   })
 )
