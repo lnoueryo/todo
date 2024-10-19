@@ -1,7 +1,7 @@
 import { TaskRepository } from '~/server/infrastructure/firestore/task.repository'
 import { Task } from '~/server/domain/entities/task'
-import { GetTaskOutputDTO } from '~/server/usecases/dto/task/output/get-task-output.dto'
-import { UpdateTaskInputDTO } from '~/server/usecases/dto/task/input/update-task-input.dto'
+import { GetTaskOutputDTO } from '~/server/application/dto/task/output/get-task-output.dto'
+import { UpdateTaskInputDTO } from '~/server/application/dto/task/input/update-task-input.dto'
 
 export class UpdateTaskInteractor {
   constructor(private taskRepo: TaskRepository) {}

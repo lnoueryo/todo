@@ -1,7 +1,7 @@
 import { TaskRepository } from '~/server/infrastructure/firestore/task.repository'
-import { DeleteTaskInteractor } from '~/server/usecases/interactors/task/delete-task.interactor'
+import { DeleteTaskInteractor } from '~/server/application/usecases/task/delete-task.usecase'
 import { fireStore } from '~/server/libs/firebase-admin'
-import { DeleteTaskInputDTO } from '~/server/usecases/dto/task/input/delete-task-input'
+import { DeleteTaskInputDTO } from '~/server/application/dto/task/input/delete-task-input'
 import { httpAuth } from '~/server/presentation/auth/http-auth'
 
 export default defineEventHandler(

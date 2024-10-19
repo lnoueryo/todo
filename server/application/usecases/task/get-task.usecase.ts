@@ -1,5 +1,5 @@
 import { TaskRepository } from '~/server/infrastructure/firestore/task.repository'
-import { GetTaskOutputDTO } from '~/server/usecases/dto/task/output/get-task-output.dto'
+import { GetTaskOutputDTO } from '~/server/application/dto/task/output/get-task-output.dto'
 
 export class GetTaskInteractor {
   constructor(private taskRepo: TaskRepository) {}

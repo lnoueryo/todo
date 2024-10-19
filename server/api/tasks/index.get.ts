@@ -1,5 +1,5 @@
 import { TaskRepository } from '~/server/infrastructure/firestore/task.repository'
-import { GetTaskInteractor } from '~/server/usecases/interactors/task/get-task.interactor'
+import { GetTaskInteractor } from '~/server/application/usecases/task/get-task.usecase'
 import { fireStore } from '~/server/libs/firebase-admin'
 import { httpAuth } from '~/server/presentation/auth/http-auth'
 

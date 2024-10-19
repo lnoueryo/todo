@@ -1,7 +1,7 @@
 import { TaskRepository } from '~/server/infrastructure/firestore/task.repository'
-import { CreateTaskInteractor } from '~/server/usecases/interactors/task/create-task.interactor'
+import { CreateTaskInteractor } from '~/server/application/usecases/task/create-task.usecase'
 import { fireStore } from '~/server/libs/firebase-admin'
-import { CreateTaskInputDTO } from '~/server/usecases/dto/task/input/create-task-input.dto'
+import { CreateTaskInputDTO } from '~/server/application/dto/task/input/create-task-input.dto'
 import { httpAuth } from '~/server/presentation/auth/http-auth'
 
 export default defineEventHandler(

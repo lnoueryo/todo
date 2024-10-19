@@ -1,5 +1,5 @@
 import { AuthRepository } from '~/server/infrastructure/auth/auth.repository'
-import { LoginInteractor } from '~/server/usecases/interactors/auth/login.interactor'
+import { LoginInteractor } from '~/server/application/usecases/auth/login.usecase'
 import { auth } from '~/server/libs/firebase-admin'
 
 export default defineEventHandler(async(event) => {
