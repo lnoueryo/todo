@@ -54,19 +54,28 @@ import type { Task as TaskType } from '~/repositories/task.repository'
 import { useTaskStore } from '~/store/task'
 
 const taskStore = useTaskStore()
+const { $toast } = useNuxtApp()
 const isOpen = ref(false)
 const tasksMenu = computed(() => [
   { title: 'Back to Todo', handler: changeToActiveTask },
   { title: 'Delete', handler: deleteTask },
 ])
 const deleteTask = async (task: TaskType) => {
-  await taskStore.deleteTasks([task])
+  try {
+    await taskStore.deleteTasks([task])
+  } catch (error) {
+    $toast.error('failed to update task')
+  }
 }
 
 const changeToActiveTask = async (task: TaskType) => {
-  const order = taskStore.todoTasks[taskStore.todoTasks.length - 1].order + 1
-  const newTask = reactive({ ...task, active: true, order })
-  await taskStore.updateTasks([newTask])
+  try {
+    const order = taskStore.todoTasks[taskStore.todoTasks.length - 1].order + 1
+    const newTask = reactive({ ...task, active: true, order })
+    await taskStore.updateTasks([newTask])
+  } catch (error) {
+    $toast.error('failed to update task')
+  }
 }
 
 const onClickOpenDeleteDialog = () => {

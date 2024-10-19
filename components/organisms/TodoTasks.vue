@@ -40,8 +40,14 @@ const onDragTask = async (todoTasks: TaskType[]) => {
     task.order = i + 1
     return task
   })
-  taskStore.tasks = [ ...newTodoTasks, ...taskStore.doneTasks ]
-  await taskStore.updateTasks(newTodoTasks)
+  const tasksCache = reactive([ ...taskStore.tasks ])
+  try {
+    taskStore.tasks = [ ...newTodoTasks, ...taskStore.doneTasks ]
+    await taskStore.updateTasks(newTodoTasks)
+  } catch (error) {
+    $toast.error('failed to update task')
+    taskStore.tasks = tasksCache
+  }
 }
 const onBlurTask = async (newTask: TaskType) => {
   try {
