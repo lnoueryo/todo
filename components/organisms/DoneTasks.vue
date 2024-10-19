@@ -10,7 +10,7 @@
       <h3>Done Tasks</h3>
     </template>
     <template #text>
-      <template v-if="doneTasks.length === 0">
+      <template v-if="taskStore.doneTasks.length === 0">
         <p class="px-4">No Done Task Now</p>
       </template>
       <template v-else>
@@ -19,15 +19,18 @@
           <Button
             color="error"
             variant="flat"
-            @click="emits('click:delete', doneTasks)"
+            @click="onClickOpenDeleteDialog"
           >delete all</Button>
         </Col>
-        <Tasks
-          :tasks="doneTasks"
-          :check="false"
-          :items="tasksMenu"
-          readonly
-        />
+        <Col class="d-flex align-center" v-for="(task, i) in taskStore.doneTasks" :key="i">
+          <Task
+            ref="taskRef"
+            v-bind="task"
+            :items="tasksMenu"
+            :check="false"
+            readonly
+          />
+        </Col>
       </template>
     </template>
     <template #actions="{ isActive }">
@@ -46,37 +49,29 @@ import Col from '~/components/atoms/Col.vue'
 import Spacer from '~/components/atoms/Spacer.vue'
 import Button from '~/components/atoms/Button.vue'
 import BasicDialog from '~/components/molecules/BasicDialog.vue'
-import Tasks from '~/components/organisms/Tasks.vue'
+import Task from '~/components/molecules/Task.vue'
 import type { Task as TaskType } from '~/repositories/task.repository'
-const props = defineProps({
-  tasks: {
-    type: Array as () => TaskType[],
-    default: []
-  }
-})
-const emits = defineEmits([
-  'change:tasks',
-  'blur:task',
-  'click:delete',
-])
-const todoTasks = computed(() => props.tasks.filter(task => task.active))
-const doneTasks = computed(() => props.tasks.filter(task => !task.active))
+import { useTaskStore } from '~/store/task'
+
+const taskStore = useTaskStore()
 const isOpen = ref(false)
-
-const deleteTask = (task: TaskType) => {
-  emits('click:delete', [task])
-}
-
-const changeToActiveTask = (task: TaskType) => {
-  const order = todoTasks.value[todoTasks.value.length - 1].order + 1
-  const newTask = reactive({ ...task, active: true, order })
-  emits('blur:task', newTask)
-}
-
 const tasksMenu = computed(() => [
   { title: 'Back to Todo', handler: changeToActiveTask },
   { title: 'Delete', handler: deleteTask },
 ])
+const deleteTask = async (task: TaskType) => {
+  await taskStore.deleteTasks([task])
+}
+
+const changeToActiveTask = async (task: TaskType) => {
+  const order = taskStore.todoTasks[taskStore.todoTasks.length - 1].order + 1
+  const newTask = reactive({ ...task, active: true, order })
+  await taskStore.updateTasks([newTask])
+}
+
+const onClickOpenDeleteDialog = () => {
+  taskStore.openDeleteTaskDialog(taskStore.doneTasks)
+}
 
 </script>
 

@@ -5,162 +5,46 @@
         <h2 class="mb-4">Tasks</h2>
         <Button icon="mdi-plus" @click="onClickAddTask" />
       </Col>
-      <Tasks
+      <TodoTasks
         ref="tasksRef"
         class="tasks"
-        :tasks="todoTasks"
-        @change:tasks="tasks = $event"
-        @blur:task="onBlurTask"
-        @click:delete="onClickOpenDeleteDialog"
-        @drag:task="onDragTask"
       />
       <div class="button-container">
         <DoneTasks
-          :tasks="tasks"
-          @blur:task="onBlurTask"
-          @click:delete="onClickOpenDeleteDialog"
+          :tasks="taskStore.tasks"
         />
       </div>
     </div>
-    <BasicDialog v-model="isOpen" persistent headerColor="error">
-      <template #title>
-        <h3>Delete Task</h3>
-      </template>
-      <template #text>
-        <p>Is it ok to delete task?</p>
-        <ul class="px-4">
-          <li v-for="deleteTask in deleteTasksCache">{{ deleteTask.content }}</li>
-        </ul>
-      </template>
-      <template #actions>
-        <Spacer />
-        <Button
-          elevation="0"
-          color="gray"
-          variant="flat"
-          @click="onClickCancelDelete"
-        >close</
-          Button
-        >
-        <Button
-          elevation="0"
-          color="error"
-          variant="flat"
-          @click="onClickDeleteTask"
-        >Yes</
-          Button
-        >
-      </template>
-    </BasicDialog>
+    <DeleteTaskDialog />
   </div>
 </template>
 
 <script setup lang="ts">
-import Spacer from '~/components/atoms/Spacer.vue'
-import BasicDialog from '~/components/molecules/BasicDialog.vue'
 import Col from '~/components/atoms/Col.vue'
 import Button from '~/components/atoms/Button.vue'
-import Tasks from '~/components/organisms/Tasks.vue'
+import TodoTasks from '~/components/organisms/TodoTasks.vue'
 import DoneTasks from '~/components/organisms/DoneTasks.vue'
-import type { Task } from '~/repositories/task.repository'
-const onDragTask = async (todoTasks: Task[]) => {
-  const newTodoTasks = todoTasks.map((task, i) => {
-    task.order = i + 1
-    return task
-  })
-  const doneTasks = tasks.value.filter(task => !task.active)
-  tasks.value = [ ...newTodoTasks, ...doneTasks ]
-  await updateTasks(newTodoTasks)
-}
-const isOpen = ref(false)
-const { $taskRepository, $loading, $toast, $auth } = useNuxtApp()
-const router = useRouter()
-const tasks = ref<Task[]>([])
+import DeleteTaskDialog from '~/components/organisms/DeleteTaskDialog.vue'
+import { useTaskStore } from '~/store/task'
+
+const taskStore = useTaskStore()
+const { $loading, $toast } = useNuxtApp()
+
 try {
   $loading.show()
-  const response = await $taskRepository.getTasks()
-  tasks.value = response.tasks
+  await taskStore.getTasks()
 } catch (error) {
   $toast.error('failed to fetch tasks')
 } finally {
   $loading.hide()
 }
-const todoTasks = computed(() => tasks.value.filter(task => task.active))
-const tasksRef = ref<typeof Tasks | null>(null)
-const isCreatingMode = ref(false)
+const tasksRef = ref<typeof TodoTasks | null>(null)
+
 const onClickAddTask = async () => {
-  if (!$auth.currentUser?.uid) {
-    return await router.push('/login')
-  }
-  isCreatingMode.value = true
-  const newTask = {
-    id: '',
-    content: '',
-    active: true,
-    order: tasks.value[tasks.value.length - 1].order + 1
-  }
-  await tasks.value.push(newTask)
+  await taskStore.addTask()
   if (tasksRef.value) {
     tasksRef.value.focusTask()
   }
-}
-
-const onBlurTask = async (newTask: Task) => {
-  try {
-    if (isCreatingMode.value && newTask.content) {
-      return await createTask(newTask)
-    }
-    if (isCreatingMode.value && !newTask.content) {
-      return tasks.value = tasks.value.filter((task) => {
-        return task.id !== newTask.id
-      })
-    }
-    if (!isCreatingMode.value) {
-      tasks.value = tasks.value.map((task) => {
-        if (task.id === newTask.id) {
-          return newTask
-        }
-        return task
-      })
-      return await updateTasks([newTask])
-    }
-  } catch (error) {
-    $toast.error('failed to update task')
-  } finally {
-    isCreatingMode.value = false
-  }
-
-}
-const createTask = async (newTask: Task) => {
-  const res = await $taskRepository.createTask(newTask)
-  tasks.value = res.tasks
-}
-
-const updateTasks = async (updateTasks: Task[]) => {
-  const res = await $taskRepository.updateTasks(updateTasks)
-  tasks.value = res.tasks
-}
-
-const deleteTasksCache = ref<Task[]>([])
-
-const onClickOpenDeleteDialog = (tasks: Task[]) => {
-  isOpen.value = true
-  deleteTasksCache.value = tasks
-}
-
-const onClickDeleteTask = async () => {
-  const res = await $taskRepository.deleteTask(deleteTasksCache.value)
-  tasks.value = res.tasks
-  closeDeleteDialog()
-}
-
-const onClickCancelDelete = () => {
-  closeDeleteDialog()
-}
-
-const closeDeleteDialog = () => {
-  isOpen.value = false
-  deleteTasksCache.value = []
 }
 </script>
 
