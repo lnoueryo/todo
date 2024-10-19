@@ -1,4 +1,4 @@
-import { AuthRepository } from '~/server/domain/repositories/auth/auth.repository'
+import { AuthRepository } from '~/server/infrastructure/auth/auth.repository'
 
 export class LoginInteractor {
   constructor(private authRepo: AuthRepository) {}

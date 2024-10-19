@@ -1,4 +1,4 @@
-import { TaskRepository } from '~/server/domain/repositories/task/task.repository'
+import { TaskRepository } from '~/server/infrastructure/firestore/task.repository'
 import { GetTaskOutputDTO } from '~/server/usecases/dto/task/output/get-task-output.dto'
 
 export class GetTaskInteractor {

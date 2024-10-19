@@ -1,4 +1,4 @@
-import type { ITaskRepository } from './interface'
+import type { ITaskRepository } from '../../domain/repositories/task.repository'
 import admin from 'firebase-admin'
 import { Task } from '~/server/domain/entities/task'
 

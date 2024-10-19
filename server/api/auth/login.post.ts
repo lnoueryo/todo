@@ -1,4 +1,4 @@
-import { AuthRepository } from '~/server/domain/repositories/auth/auth.repository'
+import { AuthRepository } from '~/server/infrastructure/auth/auth.repository'
 import { LoginInteractor } from '~/server/usecases/interactors/auth/login.interactor'
 import { auth } from '~/server/libs/firebase-admin'
 
