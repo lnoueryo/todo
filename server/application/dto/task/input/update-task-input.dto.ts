@@ -11,18 +11,22 @@ export class UpdateTaskInputDTO {
   user: User
 
   constructor(tasks: UpdateTaskProcessedData[], user: User) {
+    const errMessage = this.validate(tasks)
+    if (errMessage) {
+      throw new ValidationError('Task order is required')
+    }
     this.tasks = tasks
     this.taskIds = tasks.map((task) => task.id)
     this.user = user
-    this.validate()
   }
 
-  validate() {
-    for (const task of this.tasks) {
+  validate(tasks: any[]) {
+    for (const task of tasks) {
       if (!task.order) {
-        throw new ValidationError('Task order is required')
+        return 'Task order is required'
       }
     }
+    return null
   }
 
   public static fromRequest(task: UpdateTaskRequest): UpdateTaskProcessedData {
@@ -36,6 +40,9 @@ export class UpdateTaskInputDTO {
   }
 
   public static fromRequestArray(tasks: UpdateTaskRequest[], user: User): UpdateTaskInputDTO {
+    if (!Array.isArray(tasks)) {
+      throw new ValidationError('Task array is only allowed')
+    }
     return new UpdateTaskInputDTO(
       tasks.map(task => UpdateTaskInputDTO.fromRequest(task)),
       user

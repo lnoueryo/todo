@@ -10,20 +10,30 @@ export class CreateTaskInputDTO {
   user: User
 
   constructor(task: CreateTaskRequest, user: User) {
+    const errMessage = this.validate(task)
+    if (errMessage) {
+      throw new ValidationError(errMessage)
+    }
     this.task = {
       ...task,
       userId: user.id
     }
     this.user = user
-    this.validate()
   }
-
-  validate() {
-    for (const key in this.task) {
-      const value = this.task[key as keyof CreateTaskInput]
+  private validate(task: any): string | null {
+    if (typeof task !== 'object') {
+      return 'Task object is only allowed'
+    }
+    const requiredKeys: (keyof CreateTaskInput)[] = ['content', 'active', 'order']
+    for (const key in requiredKeys) {
+      if (!(key in task)) {
+        return `${key} is required`
+      }
+      const value = task[key]
       if (value === null || value === undefined) {
-        throw new ValidationError(`${key} is required`)
+        return `${key} is required`
       }
     }
+    return null
   }
 }
