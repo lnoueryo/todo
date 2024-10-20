@@ -45,6 +45,5 @@ jobs:
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/todo:${{ github.sha }} \
             --tag $TAG \
             --platform managed \
-            --no-traffic \
             --region asia-northeast1 \
             --allow-unauthenticated
