@@ -24,6 +24,9 @@ jobs:
         run: |
           echo '${{ secrets.FIREBASE_ADMIN_SERVICE_ACCOUNT }}' > ./.credentials/firebase-admin.json
 
+      - name: Create credentials directory
+        run: mkdir -p ./.credentials
+
       - name: Authorize Docker push
         run: gcloud auth configure-docker
 
