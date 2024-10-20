@@ -10,7 +10,6 @@ RUN npm install -g pnpm
 
 COPY ./package.json ./
 COPY ./pnpm-lock.yaml ./
-COPY .credentials/firebase-admin.json .credentials/firebase-admin.json
 
 RUN pnpm install
 
@@ -21,6 +20,8 @@ RUN pnpm build
 FROM node:20.9-slim
 
 WORKDIR /app
+
+COPY .credentials/firebase-admin.json .credentials/firebase-admin.json
 
 COPY --from=build-stage /app/.output ./
 
