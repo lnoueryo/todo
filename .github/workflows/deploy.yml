@@ -34,7 +34,8 @@ jobs:
         run: |
           docker build --build-arg MODE=stage \
           -f Dockerfile \
-          -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/todo:${{ github.sha }}
+          -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/todo:${{ github.sha }} \
+          .
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/todo:${{ github.sha }}
 
       - name: Deploy to Google Cloud Run - Production
