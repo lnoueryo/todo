@@ -10,7 +10,7 @@ RUN npm install -g pnpm
 
 COPY ./package.json ./
 COPY ./pnpm-lock.yaml ./
-COPY ./credentials/firebase-admin.json ./credentials/firebase-admin.json
+COPY ./.credentials/firebase-admin.json ./.credentials/firebase-admin.json
 
 RUN pnpm install
 
