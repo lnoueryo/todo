@@ -5,7 +5,7 @@ import { AuthRepository } from '~/server/infrastructure/auth/auth.repository'
 import { httpErrorHandler } from '~/server/presentation/shared/http-error-handler'
 
 export const httpAuth = (handler: (event: H3Event, user: User) => any) => {
-  return async (event: H3Event) => {
+  return (event: H3Event) => {
     const idToken = getCookie(event, 'idToken')
     if (!idToken) {
       throw createError({
@@ -13,8 +13,10 @@ export const httpAuth = (handler: (event: H3Event, user: User) => any) => {
         message: 'id token is required',
       })
     }
-    const authRepo = new AuthRepository(auth)
-    const decodedToken = await authRepo.verifyIdToken(idToken)
-    return await httpErrorHandler(async () => await handler(event, decodedToken))
+    return httpErrorHandler(async () => {
+      const authRepo = new AuthRepository(auth)
+      const decodedToken = await authRepo.verifyIdToken(idToken)
+      return handler(event, decodedToken)
+    })
   }
 }
