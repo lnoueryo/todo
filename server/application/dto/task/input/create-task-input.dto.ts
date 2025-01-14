@@ -25,7 +25,7 @@ export class CreateTaskInputDTO {
       return 'Task object is only allowed'
     }
     const requiredKeys: (keyof CreateTaskInput)[] = ['content', 'active', 'order']
-    for (const key in requiredKeys) {
+    for (const key of requiredKeys) {
       if (!(key in task)) {
         return `${key} is required`
       }

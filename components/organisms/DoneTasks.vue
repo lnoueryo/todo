@@ -4,7 +4,7 @@
       <Button
         v-bind="props"
         color="success"
-      >Done Task</Button>
+      >Done Tasks</Button>
     </template>
     <template #title>
       <h3>Done Tasks</h3>

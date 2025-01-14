@@ -51,14 +51,17 @@ const onDragTask = async (todoTasks: TaskType[]) => {
 }
 const onBlurTask = async (newTask: TaskType) => {
   try {
+    // 作成
     if (taskStore.isCreatingMode && newTask.content) {
       return await taskStore.createTask(newTask)
     }
+    // 空の場合新規タスクを削除
     if (taskStore.isCreatingMode && !newTask.content) {
       return taskStore.tasks = taskStore.tasks.filter((task) => {
         return task.id !== newTask.id
       })
     }
+    // 更新
     if (!taskStore.isCreatingMode) {
       taskStore.tasks = taskStore.tasks.map((task) => {
         if (task.id === newTask.id) {

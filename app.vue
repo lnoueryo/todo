@@ -1,9 +1,11 @@
 <template>
-  <VApp>
-    <NuxtLayout />
-    <Loading />
-    <Toast />
-  </VApp>
+  <ClientOnly>
+    <VApp>
+      <NuxtLayout />
+      <Loading />
+      <Toast />
+    </VApp>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
