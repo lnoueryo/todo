@@ -70,7 +70,7 @@ const deleteTask = async (task: TaskType) => {
 
 const changeToActiveTask = async (task: TaskType) => {
   try {
-    const order = taskStore.todoTasks[taskStore.todoTasks.length - 1].order + 1
+    const order = taskStore.todoTasks.length === 0 ? 1 : taskStore.todoTasks[taskStore.todoTasks.length - 1].order + 1
     const newTask = reactive({ ...task, active: true, order })
     await taskStore.updateTasks([newTask])
   } catch (error) {
