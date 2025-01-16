@@ -1,25 +1,16 @@
-import { TaskRepository } from '~/server/infrastructure/firestore/task.repository'
 import { Task } from '~/server/domain/entities/task'
-import { GetTaskOutputDTO } from '~/server/application/dto/task/output/get-task-output.dto'
-import { UpdateTaskInputDTO } from '~/server/application/dto/task/input/update-task-input.dto'
+import { UpdateTaskRequest } from '~/server/interfaces/dto/task/request/update-task-request.dto'
+import { TaskService } from '~/server/domain/services/task.service'
 
 export class UpdateTaskUsecase {
-  constructor(private taskRepo: TaskRepository) {}
-  public async execute(updateTaskInput: UpdateTaskInputDTO): Promise<GetTaskOutputDTO[]> {
-    const targetTasks = await this.taskRepo.getTasksByIds(updateTaskInput.taskIds)
-    const areTasksCurrentUsers = targetTasks.every((task) => task.isCurrentUserTask(updateTaskInput.user))
+  constructor(private taskService: TaskService) {}
+  public async execute(updateTaskRequest: UpdateTaskRequest): Promise<Task[]> {
+    const areTasksCurrentUsers = this.taskService.areTasksCurrentUsers(updateTaskRequest.taskIds, updateTaskRequest.user)
     if (!areTasksCurrentUsers) {
       console.warn("tasks are not current user's")
-      throw createError({
-        status: 400
-      })
+      throw new Error()
     }
-    const updateTasks = updateTaskInput.tasks.map((task) => {
-      const newTask = new Task(task)
-      return this.taskRepo.updateTask(newTask)
-    })
-    await Promise.all(updateTasks)
-    const tasks = await this.taskRepo.getTasksByUserId(updateTaskInput.user.id)
-    return GetTaskOutputDTO.fromEntities(tasks)
+    await this.taskService.updateBatch(updateTaskRequest.tasks)
+    return await this.taskService.getTasksByUserId(updateTaskRequest.user.id)
   }
 }

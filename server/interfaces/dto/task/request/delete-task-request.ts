@@ -1,7 +1,7 @@
 import { ValidationError } from '~/server/application/shared/validation-error'
 import type { User } from '~/server/types/user'
 
-export class DeleteTaskInputDTO {
+export class DeleteTaskRequest {
   ids: string[]
   user: User
 

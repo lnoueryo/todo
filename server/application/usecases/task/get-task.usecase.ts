@@ -1,13 +1,12 @@
-import { TaskRepository } from '~/server/infrastructure/firestore/task.repository'
-import { GetTaskOutputDTO } from '~/server/application/dto/task/output/get-task-output.dto'
+import { TaskService } from '~/server/domain/services/task.service';
+import { Task } from '~/server/domain/entities/task';
 
 export class GetTaskUsecase {
-  constructor(private taskRepo: TaskRepository) {}
+  constructor(private TaskService: TaskService) {}
   public async execute(params: {
     id: string,
     email: string
-  }): Promise<GetTaskOutputDTO[]> {
-    const tasks = await this.taskRepo.getTasksByUserId(params.id)
-    return GetTaskOutputDTO.fromEntities(tasks)
+  }): Promise<Task[]> {
+    return await this.TaskService.getTasksByUserId(params.id)
   }
 }

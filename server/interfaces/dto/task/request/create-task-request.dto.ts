@@ -2,14 +2,11 @@ import { ValidationError } from '~/server/application/shared/validation-error'
 import type { ITask } from '~/server/domain/entities/task'
 import type { User } from '~/server/types/user'
 
-type CreateTaskInput = Omit<ITask, 'createdAt' | 'updatedAt'>
-type CreateTaskRequest = Omit<ITask, 'userId' | 'createdAt' | 'updatedAt'>
-
-export class CreateTaskInputDTO {
-  task: CreateTaskInput
+export class CreateTaskRequest {
+  task: Omit<ITask, 'createdAt' | 'updatedAt'>
   user: User
 
-  constructor(task: CreateTaskRequest, user: User) {
+  constructor(task: Omit<ITask, 'userId' | 'createdAt' | 'updatedAt'>, user: User) {
     const errMessage = this.validate(task)
     if (errMessage) {
       throw new ValidationError(errMessage)
@@ -24,7 +21,7 @@ export class CreateTaskInputDTO {
     if (typeof task !== 'object') {
       return 'Task object is only allowed'
     }
-    const requiredKeys: (keyof CreateTaskInput)[] = ['content', 'active', 'order']
+    const requiredKeys: (keyof Omit<ITask, 'createdAt' | 'updatedAt'>)[] = ['content', 'active', 'order']
     for (const key of requiredKeys) {
       if (!(key in task)) {
         return `${key} is required`

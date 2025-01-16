@@ -2,10 +2,9 @@ import { ValidationError } from '~/server/application/shared/validation-error'
 import type { ITask } from '~/server/domain/entities/task'
 import type { User } from '~/server/types/user'
 
-type UpdateTaskRequest = Omit<ITask, 'userId' | 'createdAt' | 'updatedAt'>
-type UpdateTaskProcessedData = UpdateTaskRequest & { updatedAt: Date }
+type UpdateTaskProcessedData = Omit<ITask, 'createdAt' | 'updatedAt'> & { id: string, updatedAt: Date }
 
-export class UpdateTaskInputDTO {
+export class UpdateTaskRequest {
   tasks: UpdateTaskProcessedData[]
   taskIds: string[]
   user: User
@@ -29,9 +28,10 @@ export class UpdateTaskInputDTO {
     return null
   }
 
-  public static fromRequest(task: UpdateTaskRequest): UpdateTaskProcessedData {
+  public static fromRequest(task: Omit<ITask, 'createdAt' | 'updatedAt'> & { id: string}): UpdateTaskProcessedData {
     return {
       id: task.id,
+      userId: task.userId,
       content: task.content,
       active: task.active,
       order: task.order,
@@ -39,12 +39,12 @@ export class UpdateTaskInputDTO {
     }
   }
 
-  public static fromRequestArray(tasks: UpdateTaskRequest[], user: User): UpdateTaskInputDTO {
+  public static fromRequestArray(tasks: (Omit<ITask, 'createdAt' | 'updatedAt'> & { id: string })[], user: User): UpdateTaskRequest {
     if (!Array.isArray(tasks)) {
       throw new ValidationError('Task array is only allowed')
     }
-    return new UpdateTaskInputDTO(
-      tasks.map(task => UpdateTaskInputDTO.fromRequest(task)),
+    return new UpdateTaskRequest(
+      tasks.map(task => UpdateTaskRequest.fromRequest(task)),
       user
     )
   }

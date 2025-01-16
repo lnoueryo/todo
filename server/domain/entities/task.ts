@@ -1,7 +1,7 @@
 import { User } from '~/server/types/user'
 
 export interface ITask {
-  id: string
+  id: string | undefined
   userId: string
   content: string
   active: boolean
@@ -11,7 +11,7 @@ export interface ITask {
 }
 
 export class Task implements ITask {
-  public id: string
+  public id: string | undefined
   public userId: string
   public content: string
   public active: boolean
@@ -19,8 +19,8 @@ export class Task implements ITask {
   public createdAt: Date
   public updatedAt: Date
   constructor(params: {
-    id: string
-    userId?: string
+    id?: string
+    userId: string
     content: string
     active: boolean
     order: number
@@ -28,7 +28,7 @@ export class Task implements ITask {
     updatedAt?: Date
   }) {
     this.id = params.id
-    this.userId = params.userId ?? ''
+    this.userId = params.userId
     this.content = params.content
     this.active = params.active
     this.order = params.order

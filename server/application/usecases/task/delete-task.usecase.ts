@@ -1,23 +1,17 @@
+import { Task } from '~/server/domain/entities/task'
+import { TaskService } from '~/server/domain/services/task.service'
 import { TaskRepository } from '~/server/infrastructure/firestore/task.repository'
-import { DeleteTaskInputDTO } from '~/server/application/dto/task/input/delete-task-input'
-import { GetTaskOutputDTO } from '~/server/application/dto/task/output/get-task-output.dto'
+import { DeleteTaskRequest } from '~/server/interfaces/dto/task/request/delete-task-request'
 
 export class DeleteTaskUsecase {
-  constructor(private taskRepo: TaskRepository) {}
-  public async execute(deleteTaskInput: DeleteTaskInputDTO): Promise<GetTaskOutputDTO[]> {
-    const targetTasks = await this.taskRepo.getTasksByIds(deleteTaskInput.ids)
-    const areTasksCurrentUsers = targetTasks.every((task) => task.isCurrentUserTask(deleteTaskInput.user))
+  constructor(private taskService: TaskService) {}
+  public async execute(deleteTaskRequest: DeleteTaskRequest): Promise<Task[]> {
+    const areTasksCurrentUsers = await this.taskService.areTasksCurrentUsers(deleteTaskRequest.ids, deleteTaskRequest.user)
     if (!areTasksCurrentUsers) {
       console.warn("tasks are not current user's")
-      throw createError({
-        status: 400
-      })
+      throw new Error()
     }
-    const deleteTasks = deleteTaskInput.ids.map((id) => {
-      return this.taskRepo.deleteTask(id)
-    })
-    await Promise.all(deleteTasks)
-    const tasks = await this.taskRepo.getTasksByUserId(deleteTaskInput.user.id)
-    return GetTaskOutputDTO.fromEntities(tasks)
+    await this.taskService.deleteBatch(deleteTaskRequest.ids)
+    return await this.taskService.getTasksByUserId(deleteTaskRequest.user.id)
   }
 }

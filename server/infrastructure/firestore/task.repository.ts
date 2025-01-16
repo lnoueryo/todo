@@ -4,7 +4,7 @@ import { Task } from '~/server/domain/entities/task'
 
 export class TaskRepository implements ITaskRepository  {
   constructor(private fireStore: admin.firestore.Firestore) {}
-  async getTasksByUserId(id: string): Promise<Task[]> {
+  async getByUserId(id: string): Promise<Task[]> {
     const tasksRef = this.fireStore.collection('tasks').orderBy('order')
     const snapshot = await tasksRef.where('userId', '==', id).get()
     return snapshot.docs.map(doc => {
@@ -78,7 +78,7 @@ export class TaskRepository implements ITaskRepository  {
       updatedAt,
     })
   }
-  async createTask(task: Task): Promise<Task> {
+  async save(task: Task): Promise<Task> {
     const {
       userId,
       active,
@@ -98,8 +98,8 @@ export class TaskRepository implements ITaskRepository  {
     task.id = newTask.id
     return task
   }
-  async updateTask(task: Task): Promise<admin.firestore.WriteResult> {
-    return this.fireStore.collection('tasks').doc(task.id).update({
+  async updateTask(id: string, task: Task): Promise<admin.firestore.WriteResult> {
+    return this.fireStore.collection('tasks').doc(id).update({
       content: task.content,
       active: task.active,
       order: task.order,

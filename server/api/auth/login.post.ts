@@ -1,6 +1,6 @@
 import { AuthRepository } from '~/server/infrastructure/auth/auth.repository'
 import { LoginUsecase } from '~/server/application/usecases/auth/login.usecase'
-import { auth } from '~/server/libs/firebase-admin'
+import { auth } from '~/server/infrastructure/auth/firebase-admin'
 
 export default defineEventHandler(async(event) => {
   const body = await readBody(event)
