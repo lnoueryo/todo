@@ -98,13 +98,8 @@ export class TaskRepository implements ITaskRepository  {
     task.id = newTask.id
     return task
   }
-  async updateTask(id: string, task: Task): Promise<admin.firestore.WriteResult> {
-    return this.fireStore.collection('tasks').doc(id).update({
-      content: task.content,
-      active: task.active,
-      order: task.order,
-      updatedAt: task.updatedAt,
-    })
+  async updateTask(id: string, taskData: Partial<Omit<Task, 'id' | 'userId' | 'createdAt'>>): Promise<admin.firestore.WriteResult> {
+    return this.fireStore.collection('tasks').doc(id).update(taskData)
   }
   async deleteTask(id: string): Promise<void> {
     const taskRef = this.fireStore.collection('tasks').doc(id)

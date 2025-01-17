@@ -1,7 +1,6 @@
-import { ServiceError } from '../shared/error-code'
-import type { CommonErrorCode } from '~/server/types'
+import { CommonErrorCode, DomainError } from '~/server/domain/exceptions/domain-error.interface'
 
-export class FirebaseAuthError extends ServiceError {
+export class FirebaseAuthError extends Error implements DomainError {
   constructor(public code: string, public message: string) {
     super(message)
   }
@@ -9,7 +8,7 @@ export class FirebaseAuthError extends ServiceError {
   getCommonErrorCode() {
     const firebaseAuthCommonErrorMapper: Record<string, CommonErrorCode> = {
       'auth/email-already-exists': 'validation',
-      'auth/id-token-expired': 'unauthorize',
+      'auth/id-token-expired': 'unauthorized',
       'auth/id-token-revoked': 'permission-denied',
       'auth/insufficient-permission': 'forbidden',
       'auth/internal-error': 'internal',

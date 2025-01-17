@@ -1,17 +1,28 @@
 import { Task } from '~/server/domain/entities/task'
+import type { User } from '~/server/domain/entities/user'
 import { TaskService } from '~/server/domain/services/task.service'
-import { TaskRepository } from '~/server/infrastructure/firestore/task.repository'
 import { DeleteTaskRequest } from '~/server/interfaces/dto/task/request/delete-task-request'
+import { UsecaseResult } from '../../shared/usecase-result'
 
 export class DeleteTaskUsecase {
   constructor(private taskService: TaskService) {}
-  public async execute(deleteTaskRequest: DeleteTaskRequest): Promise<Task[]> {
-    const areTasksCurrentUsers = await this.taskService.areTasksCurrentUsers(deleteTaskRequest.ids, deleteTaskRequest.user)
+  public async execute(deleteTaskRequest: DeleteTaskRequest, user: User): Promise<
+    UsecaseResult<Task[], 'forbidden'>
+  > {
+    const areTasksCurrentUsers = await this.taskService.areTasksCurrentUsers(deleteTaskRequest.ids, user)
     if (!areTasksCurrentUsers) {
-      console.warn("tasks are not current user's")
-      throw new Error()
+      console.error(`user: ${user}`)
+      return {
+        error: {
+          type: 'forbidden',
+          message: `tasks are not current user's`
+        }
+      }
     }
     await this.taskService.deleteBatch(deleteTaskRequest.ids)
-    return await this.taskService.getTasksByUserId(deleteTaskRequest.user.id)
+    const tasks = await this.taskService.getTasksByUserId(user.id)
+    return {
+      success: tasks
+    }
   }
 }

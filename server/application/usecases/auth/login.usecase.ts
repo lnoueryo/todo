@@ -1,15 +1,39 @@
-import { AuthRepository } from '~/server/infrastructure/auth/auth.repository'
+import { CommonErrorCode, DomainError } from '~/server/domain/exceptions/domain-error.interface'
+import { AuthRepository } from '~/server/infrastructure/firebase-auth/auth.repository'
+import { UsecaseResult } from '../../shared/usecase-result'
 
 export class LoginUsecase {
   constructor(private authRepo: AuthRepository) {}
-  public async execute(idToken: string): Promise<{
-    id: string
-    email: string
-  }> {
+  public async execute(idToken: string): Promise<
+    UsecaseResult<
+      {
+        id: string
+        email: string
+      },
+      CommonErrorCode
+    >
+  > {
     try {
-      return await this.authRepo.verifyIdToken(idToken)
+      const result = await this.authRepo.verifyIdToken(idToken)
+      return {
+        success: result
+      }
     } catch (error) {
-      throw createError({ statusCode: 401, statusMessage: 'Unauthorized: Invalid or expired token' })
+      console.error(error)
+      if (error instanceof DomainError) {
+        throw {
+          error: {
+            type: error.getCommonErrorCode(),
+            message: error.message,
+          }
+        }
+      }
+      return {
+        error: {
+          type: 'internal',
+          message: 'An unexpected error occurred',
+        }
+      }
     }
   }
 }

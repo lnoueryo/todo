@@ -1,5 +1,5 @@
-import { TaskService } from '~/server/domain/services/task.service';
-import { Task } from '~/server/domain/entities/task';
+import { TaskService } from '~/server/domain/services/task.service'
+import { Task } from '~/server/domain/entities/task'
 
 export class GetTaskUsecase {
   constructor(private TaskService: TaskService) {}
