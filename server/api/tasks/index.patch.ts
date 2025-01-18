@@ -2,11 +2,22 @@ import { fireStore } from '~/server/infrastructure/firebase/firebase-admin'
 import { httpAuth } from '~/server/interfaces/auth/http-auth'
 import { UpdateTaskRequest } from '~/server/interfaces/dto/task/request/update-task-request.dto'
 import { UpdateTaskUsecase } from '~/server/application/usecases/task/update-task.usecase'
-import { GetTaskResponse } from '~/server/interfaces/dto/task/response/get-task-response.dto'
+import { TaskResponse } from '~/server/interfaces/dto/task/response/task-response.dto'
 import { getHttpStatus } from '~/server/interfaces/shared/http-status-mapper'
 import { FireStoreTransactionManager } from '~/server/infrastructure/firebase/firestore/transaction-manager.repository'
 
-export default defineEventHandler(
+export default defineEventHandler<
+  Promise<
+  {
+    tasks: {
+      id: string
+      content: string
+      active: boolean
+      order: number
+    }[]
+  }
+  >
+>(
   httpAuth(async(event, user) => {
     const body = await readBody(event)
     const updateTaskRequest = new UpdateTaskRequest(body)
@@ -20,6 +31,6 @@ export default defineEventHandler(
       })
     }
     setResponseStatus(event, 202)
-    return new GetTaskResponse(result.success.tasks)
+    return new TaskResponse(result.success.tasks).responseUserTasks()
   })
 )

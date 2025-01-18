@@ -3,10 +3,21 @@ import { CreateTaskUsecase } from '~/server/application/usecases/task/create-tas
 import { fireStore } from '~/server/infrastructure/firebase/firebase-admin'
 import { CreateTaskRequest } from '~/server/interfaces/dto/task/request/create-task-request.dto'
 import { httpAuth } from '~/server/interfaces/auth/http-auth'
-import { GetTaskResponse } from '~/server/interfaces/dto/task/response/get-task-response.dto'
+import { TaskResponse } from '~/server/interfaces/dto/task/response/task-response.dto'
 import { getHttpStatus } from '~/server/interfaces/shared/http-status-mapper'
 
-export default defineEventHandler(
+export default defineEventHandler<
+  Promise<
+  {
+    tasks: {
+      id: string
+      content: string
+      active: boolean
+      order: number
+    }[]
+  }
+  >
+>(
   httpAuth(async(event, user) => {
     const body = await readBody(event)
     const createTaskInput = new CreateTaskRequest(body)
@@ -20,6 +31,6 @@ export default defineEventHandler(
       })
     }
     setResponseStatus(event, 201)
-    return new GetTaskResponse(result.success.tasks)
+    return new TaskResponse(result.success.tasks).responseUserTasks()
   })
 )

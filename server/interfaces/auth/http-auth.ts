@@ -4,7 +4,7 @@ import { auth } from '~/server/infrastructure/firebase/firebase-admin'
 import { AuthRepository } from '~/server/infrastructure/firebase/firebase-auth/auth.repository'
 import { httpErrorHandler } from '~/server/interfaces/shared/http-error-handler'
 
-export const httpAuth = (handler: (event: H3Event, user: User) => any) => {
+export const httpAuth = <T>(handler: (event: H3Event, user: User) => Promise<T>) => {
   return (event: H3Event) => {
     const idToken = getCookie(event, 'idToken')
     if (!idToken) {
