@@ -101,7 +101,7 @@ export class TaskRepository extends BaseRepository implements ITaskRepository  {
     return task
   }
   async updateTask(id: string, task: Task): Promise<void> {
-    this.getCollection().doc(id).update({
+    await this.getCollection().doc(id).update({
       content: task.content,
       order: task.order,
       active: task.active,
