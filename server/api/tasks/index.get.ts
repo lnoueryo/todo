@@ -12,6 +12,7 @@ export default defineEventHandler<
       }[]
     }
   >
->(
+>
+(
   httpAuth(taskController.getTasks.bind(taskController))
 )
