@@ -7,7 +7,6 @@ export class CreateTaskUsecase {
   constructor(private taskRepo: ITaskRepository) {}
   public async execute(
     params: {
-      userId: string
       content: string
       active: boolean
       order: number
@@ -22,7 +21,7 @@ export class CreateTaskUsecase {
     >
   > {
     try {
-      const task = new Task(params)
+      const task = Task.create(user.id, params)
       task.userId = user.id
       task.createdAt = new Date()
       task.updatedAt = new Date()

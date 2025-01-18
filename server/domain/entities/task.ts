@@ -1,4 +1,10 @@
-import type { User } from "./user"
+import type { User } from './user'
+
+const UPDATABLE_FIELDS = [
+  'content',
+  'active',
+  'order',
+] as const
 
 export class Task {
   public id?: string
@@ -25,7 +31,35 @@ export class Task {
     this.createdAt = params.createdAt
     this.updatedAt = params.updatedAt
   }
-  isCurrentUserTask(user: User) {
+  static create(userId: string, taskData: {
+    content: string
+    active: boolean
+    order: number
+  }) {
+    return new Task({
+      ...taskData,
+      userId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+  }
+  public update(fields: Partial<Task>) {
+    const updateData = UPDATABLE_FIELDS.reduce((acc, field) => {
+      if (fields[field] !== undefined) {
+        return {
+          ...acc,
+          [field]: fields[field]
+        }
+      }
+      return acc
+    }, {})
+    return new Task({
+      ...this,
+      ...updateData,
+      updatedAt: new Date(),
+    })
+  }
+  isTaskOwnedByUser(user: User) {
     return this.userId === user.id
   }
 }

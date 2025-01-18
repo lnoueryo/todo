@@ -3,7 +3,6 @@ import { DeleteTaskUsecase } from '~/server/application/usecases/task/delete-tas
 import { fireStore } from '~/server/infrastructure/firebase-auth/firebase-admin'
 import { DeleteTaskRequest } from '~/server/interfaces/dto/task/request/delete-task-request'
 import { httpAuth } from '~/server/interfaces/auth/http-auth'
-import { TaskOwnershipService } from '~/server/domain/services/task/task-ownership.service'
 import { GetTaskResponse } from '~/server/interfaces/dto/task/response/get-task-response.dto'
 import { getHttpStatus } from '~/server/interfaces/shared/http-status-mapper'
 
@@ -12,11 +11,7 @@ export default defineEventHandler(
     const body = await readBody(event)
     const deleteTaskRequest = new DeleteTaskRequest(body)
     const taskRepository = new TaskRepository(fireStore)
-    const taskOwnershipService = new TaskOwnershipService(taskRepository)
-    const usecase = new DeleteTaskUsecase(
-      taskOwnershipService,
-      taskRepository,
-    )
+    const usecase = new DeleteTaskUsecase(taskRepository)
     const result = await usecase.execute(deleteTaskRequest.ids, user)
     if ('error' in result) {
       throw createError({

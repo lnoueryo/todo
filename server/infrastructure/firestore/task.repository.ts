@@ -27,7 +27,7 @@ export class TaskRepository implements ITaskRepository  {
       })
     })
   }
-  async getTasksByIds(ids: string[]): Promise<Task[]> {
+  async getByIds(ids: string[]): Promise<Task[]> {
     const tasksRef = this.fireStore.collection('tasks').orderBy('order')
     const snapshot = await tasksRef.where(admin.firestore.FieldPath.documentId(), 'in', ids).get()
     return snapshot.docs.map(doc => {
@@ -98,8 +98,13 @@ export class TaskRepository implements ITaskRepository  {
     task.id = newTask.id
     return task
   }
-  async updateTask(id: string, taskData: Partial<Omit<Task, 'id' | 'userId' | 'createdAt'>>): Promise<admin.firestore.WriteResult> {
-    return this.fireStore.collection('tasks').doc(id).update(taskData)
+  async updateTask(id: string, task: Task): Promise<admin.firestore.WriteResult> {
+    return this.fireStore.collection('tasks').doc(id).update({
+      content: task.content,
+      order: task.order,
+      active: task.active,
+      updatedAt: task.active,
+    })
   }
   async deleteTask(id: string): Promise<void> {
     const taskRef = this.fireStore.collection('tasks').doc(id)

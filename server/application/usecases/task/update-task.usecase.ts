@@ -1,14 +1,10 @@
 import { Task } from '~/server/domain/entities/task'
-import { TaskOwnershipService } from '~/server/domain/services/task/task-ownership.service'
 import { User } from '~/server/domain/entities/user'
 import { UsecaseResult } from '../../shared/usecase-result'
 import { ITaskRepository } from '~/server/domain/repositories/task.repository'
 
 export class UpdateTaskUsecase {
-  constructor(
-    private taskOwnershipService: TaskOwnershipService,
-    private taskRepo: ITaskRepository,
-  ) {}
+  constructor(private taskRepo: ITaskRepository) {}
   public async execute(
     params: {
       id: string
@@ -23,24 +19,42 @@ export class UpdateTaskUsecase {
       {
         tasks: Task[],
       },
-      'forbidden' | 'internal'
+      'validation' | 'forbidden' | 'internal'
     >
   > {
     try {
-      const areTasksCurrentUsers = this.taskOwnershipService.areTasksOwnedByUser(params.map(task => task.id), user)
-      if (!areTasksCurrentUsers) {
+      const taskIds = params.map((task) => task.id);
+      const targetTasks = await this.taskRepo.getByIds(taskIds);
+      if (targetTasks.length !== params.length) {
         console.error(`user: ${user}\nrequest: ${params}`)
         return {
           error: {
-            type: 'forbidden',
-            message: `Tasks are not current user's`
+            type: 'validation',
+            message: 'Some tasks not found',
           }
         }
       }
-      const updateTasks = params.map((taskData) => {
-        const task = new Task(taskData)
-        task.updatedAt = new Date()
-        return this.taskRepo.updateTask(taskData.id, task)
+
+      for (const task of targetTasks) {
+        if (!task.isTaskOwnedByUser(user)) {
+          console.error(`user: ${user}\nrequest: ${params}`)
+          return {
+            error: {
+              type: 'forbidden',
+              message: `Tasks are not current user's`
+            }
+          }
+        }
+      }
+
+      const taskMap = new Map(targetTasks.map((task) => [task.id, task]))
+      const updateTasks = params.map((update) => {
+        const targetTask = taskMap.get(update.id)
+        if (!targetTask) {
+          throw new Error('update task can not be found')
+        }
+        const updateTask = targetTask.update(update)
+        return this.taskRepo.updateTask(update.id, updateTask)
       })
       await Promise.all(updateTasks)
       const tasks = await this.taskRepo.getByUserId(user.id)
