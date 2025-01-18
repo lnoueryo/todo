@@ -7,7 +7,12 @@ import { UsecaseResult } from '../../shared/usecase-result'
 export class DeleteTaskUsecase {
   constructor(private taskService: TaskService) {}
   public async execute(deleteTaskRequest: DeleteTaskRequest, user: User): Promise<
-    UsecaseResult<Task[], 'forbidden'>
+    UsecaseResult<
+      {
+        tasks: Task[]
+      },
+      'forbidden'
+    >
   > {
     const areTasksCurrentUsers = await this.taskService.areTasksCurrentUsers(deleteTaskRequest.ids, user)
     if (!areTasksCurrentUsers) {
@@ -22,7 +27,9 @@ export class DeleteTaskUsecase {
     await this.taskService.deleteBatch(deleteTaskRequest.ids)
     const tasks = await this.taskService.getTasksByUserId(user.id)
     return {
-      success: tasks
+      success: {
+        tasks
+      }
     }
   }
 }

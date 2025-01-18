@@ -5,6 +5,7 @@ import { CreateTaskRequest } from '~/server/interfaces/dto/task/request/create-t
 import { httpAuth } from '~/server/interfaces/auth/http-auth'
 import { TaskService } from '~/server/domain/services/task.service'
 import { GetTaskResponse } from '~/server/interfaces/dto/task/response/get-task-response.dto'
+import { getHttpStatus } from '~/server/interfaces/shared/http-status-mapper'
 
 export default defineEventHandler(
   httpAuth(async(event, user) => {
@@ -14,7 +15,13 @@ export default defineEventHandler(
     const taskService = new TaskService(taskRepository)
     const usecase = new CreateTaskUsecase(taskService)
     const result = await usecase.execute(createTaskInput, user)
+    if ('error' in result) {
+      throw createError({
+        statusCode: getHttpStatus(result.error.type),
+        message: result.error.message,
+      })
+    }
     setResponseStatus(event, 201)
-    return new GetTaskResponse(result)
+    return new GetTaskResponse(result.success.tasks)
   })
 )

@@ -22,6 +22,6 @@ export default defineEventHandler(
       })
     }
     setResponseStatus(event, 202)
-    return new GetTaskResponse(result.success)
+    return new GetTaskResponse(result.success.tasks)
   })
 )

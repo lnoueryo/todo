@@ -7,16 +7,20 @@ export class LoginUsecase {
   public async execute(idToken: string): Promise<
     UsecaseResult<
       {
-        id: string
-        email: string
+        user: {
+          id: string
+          email: string
+        }
       },
       CommonErrorCode
     >
   > {
     try {
-      const result = await this.authRepo.verifyIdToken(idToken)
+      const user = await this.authRepo.verifyIdToken(idToken)
       return {
-        success: result
+        success: {
+          user
+        }
       }
     } catch (error) {
       console.error(error)

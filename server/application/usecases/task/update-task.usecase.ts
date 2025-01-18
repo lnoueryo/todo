@@ -7,7 +7,12 @@ import { UsecaseResult } from '../../shared/usecase-result'
 export class UpdateTaskUsecase {
   constructor(private taskService: TaskService) {}
   public async execute(updateTaskRequest: UpdateTaskRequest, user: User): Promise<
-    UsecaseResult<Task[], 'forbidden' | 'internal'>
+    UsecaseResult<
+      {
+        tasks: Task[],
+      },
+      'forbidden' | 'internal'
+    >
   > {
     try {
       const areTasksCurrentUsers = this.taskService.areTasksCurrentUsers(updateTaskRequest.getIds(), user)
@@ -23,7 +28,9 @@ export class UpdateTaskUsecase {
       await this.taskService.updateBatch(updateTaskRequest.tasks)
       const tasks = await this.taskService.getTasksByUserId(user.id)
       return {
-        success: tasks
+        success: {
+          tasks,
+        }
       }
     } catch (error) {
       console.error(error)
