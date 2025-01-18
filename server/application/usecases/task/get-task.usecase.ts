@@ -1,9 +1,9 @@
-import { TaskService } from '~/server/domain/services/task.service'
 import { Task } from '~/server/domain/entities/task'
 import { UsecaseResult } from '../../shared/usecase-result'
+import { ITaskRepository } from '~/server/domain/repositories/task.repository'
 
 export class GetTaskUsecase {
-  constructor(private TaskService: TaskService) {}
+  constructor(private TaskRepo: ITaskRepository) {}
   public async execute(params: {
     id: string,
     email: string
@@ -16,7 +16,7 @@ export class GetTaskUsecase {
     >
   > {
     try {
-      const tasks = await this.TaskService.getTasksByUserId(params.id)
+      const tasks = await this.TaskRepo.getByUserId(params.id)
       return {
         success: {
           tasks,

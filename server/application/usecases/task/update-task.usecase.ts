@@ -1,11 +1,15 @@
 import { Task } from '~/server/domain/entities/task'
 import { UpdateTaskRequest } from '~/server/interfaces/dto/task/request/update-task-request.dto'
-import { TaskService } from '~/server/domain/services/task.service'
+import { TaskOwnershipService } from '~/server/domain/services/task/task-ownership.service'
 import { User } from '~/server/domain/entities/user'
 import { UsecaseResult } from '../../shared/usecase-result'
+import { ITaskRepository } from '~/server/domain/repositories/task.repository'
 
 export class UpdateTaskUsecase {
-  constructor(private taskService: TaskService) {}
+  constructor(
+    private taskOwnershipService: TaskOwnershipService,
+    private taskRepo: ITaskRepository,
+  ) {}
   public async execute(updateTaskRequest: UpdateTaskRequest, user: User): Promise<
     UsecaseResult<
       {
@@ -15,7 +19,7 @@ export class UpdateTaskUsecase {
     >
   > {
     try {
-      const areTasksCurrentUsers = this.taskService.areTasksCurrentUsers(updateTaskRequest.getIds(), user)
+      const areTasksCurrentUsers = this.taskOwnershipService.areTasksOwnedByUser(updateTaskRequest.getIds(), user)
       if (!areTasksCurrentUsers) {
         console.error(`user: ${user}\nrequest: ${updateTaskRequest.tasks}`)
         return {
@@ -25,8 +29,13 @@ export class UpdateTaskUsecase {
           }
         }
       }
-      await this.taskService.updateBatch(updateTaskRequest.tasks)
-      const tasks = await this.taskService.getTasksByUserId(user.id)
+      const updateTasks = updateTaskRequest.tasks.map((taskData) => {
+        const task = new Task(taskData)
+        task.updatedAt = new Date()
+        return this.taskRepo.updateTask(taskData.id, task)
+      })
+      await Promise.all(updateTasks)
+      const tasks = await this.taskRepo.getByUserId(user.id)
       return {
         success: {
           tasks,

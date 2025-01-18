@@ -1,11 +1,11 @@
 import { Task } from '~/server/domain/entities/task'
 import { CreateTaskRequest } from '~/server/interfaces/dto/task/request/create-task-request.dto'
-import { TaskService } from '~/server/domain/services/task.service'
 import { User } from '~/server/domain/entities/user'
 import { UsecaseResult } from '../../shared/usecase-result'
+import { ITaskRepository } from '~/server/domain/repositories/task.repository'
 
 export class CreateTaskUsecase {
-  constructor(private taskService: TaskService) {}
+  constructor(private taskRepo: ITaskRepository) {}
   public async execute(createTaskInput: CreateTaskRequest, user: User): Promise<
     UsecaseResult<
       {
@@ -15,8 +15,12 @@ export class CreateTaskUsecase {
     >
   > {
     try {
-      await this.taskService.createTask(createTaskInput, user)
-      const tasks = await this.taskService.getTasksByUserId(user.id)
+      const task = new Task(createTaskInput.task)
+      task.userId = user.id
+      task.createdAt = new Date()
+      task.updatedAt = new Date()
+      await this.taskRepo.save(task)
+      const tasks = await this.taskRepo.getByUserId(user.id)
       return {
         success: {
           tasks,
