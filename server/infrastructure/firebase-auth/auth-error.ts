@@ -1,6 +1,6 @@
 import { CommonErrorCode, DomainError } from '~/server/domain/exceptions/domain-error.interface'
 
-export class FirebaseAuthError extends Error implements DomainError {
+export class FirebaseAuthError extends DomainError {
   constructor(public code: string, public message: string) {
     super(message)
   }

@@ -1,6 +1,6 @@
 import { ValidationError } from "~/server/application/shared/validation-error"
 import { getHttpStatus } from "./http-status-mapper"
-import { ServiceError } from "~/server/infrastructure/shared/error-code"
+import { DomainError } from "~/server/domain/exceptions/domain-error.interface"
 
 export const httpErrorHandler = async (handler: any) => {
   try {
@@ -12,7 +12,7 @@ export const httpErrorHandler = async (handler: any) => {
         message: error.message
       })
     }
-    if (error instanceof ServiceError) {
+    if (error instanceof DomainError) {
       throw createError({
         statusCode: getHttpStatus(error.getCommonErrorCode()),
         message: error.message
