@@ -1,7 +1,7 @@
 import { getCookie, createError, H3Event } from 'h3'
 import type { User } from '~/server/domain/entities/user'
-import { auth } from '~/server/infrastructure/firebase-auth/firebase-admin'
-import { AuthRepository } from '~/server/infrastructure/firebase-auth/auth.repository'
+import { auth } from '~/server/infrastructure/firebase/firebase-admin'
+import { AuthRepository } from '~/server/infrastructure/firebase/firebase-auth/auth.repository'
 import { httpErrorHandler } from '~/server/interfaces/shared/http-error-handler'
 
 export const httpAuth = (handler: (event: H3Event, user: User) => any) => {

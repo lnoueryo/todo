@@ -1,6 +1,6 @@
-import { TaskRepository } from '~/server/infrastructure/firestore/task.repository'
+import { TaskRepository } from '~/server/infrastructure/firebase/firestore/task.repository'
 import { CreateTaskUsecase } from '~/server/application/usecases/task/create-task.usecase'
-import { fireStore } from '~/server/infrastructure/firebase-auth/firebase-admin'
+import { fireStore } from '~/server/infrastructure/firebase/firebase-admin'
 import { CreateTaskRequest } from '~/server/interfaces/dto/task/request/create-task-request.dto'
 import { httpAuth } from '~/server/interfaces/auth/http-auth'
 import { GetTaskResponse } from '~/server/interfaces/dto/task/response/get-task-response.dto'

@@ -1,5 +1,5 @@
 import { CommonErrorCode, DomainError } from '~/server/domain/exceptions/domain-error.interface'
-import { AuthRepository } from '~/server/infrastructure/firebase-auth/auth.repository'
+import { AuthRepository } from '~/server/infrastructure/firebase/firebase-auth/auth.repository'
 import { UsecaseResult } from '../../shared/usecase-result'
 
 export class LoginUsecase {

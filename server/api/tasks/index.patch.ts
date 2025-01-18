@@ -1,5 +1,5 @@
-import { TaskRepository } from '~/server/infrastructure/firestore/task.repository'
-import { fireStore } from '~/server/infrastructure/firebase-auth/firebase-admin'
+import { TaskRepository } from '~/server/infrastructure/firebase/firestore/task.repository'
+import { fireStore } from '~/server/infrastructure/firebase/firebase-admin'
 import { httpAuth } from '~/server/interfaces/auth/http-auth'
 import { UpdateTaskRequest } from '~/server/interfaces/dto/task/request/update-task-request.dto'
 import { UpdateTaskUsecase } from '~/server/application/usecases/task/update-task.usecase'

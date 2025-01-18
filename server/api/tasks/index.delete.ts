@@ -1,6 +1,6 @@
-import { TaskRepository } from '~/server/infrastructure/firestore/task.repository'
+import { TaskRepository } from '~/server/infrastructure/firebase/firestore/task.repository'
 import { DeleteTaskUsecase } from '~/server/application/usecases/task/delete-task.usecase'
-import { fireStore } from '~/server/infrastructure/firebase-auth/firebase-admin'
+import { fireStore } from '~/server/infrastructure/firebase/firebase-admin'
 import { DeleteTaskRequest } from '~/server/interfaces/dto/task/request/delete-task-request'
 import { httpAuth } from '~/server/interfaces/auth/http-auth'
 import { GetTaskResponse } from '~/server/interfaces/dto/task/response/get-task-response.dto'

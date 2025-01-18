@@ -1,4 +1,4 @@
-import type { IAuthRepository } from '../../domain/repositories/auth.repository'
+import type { IAuthRepository } from '../../../domain/repositories/auth.repository'
 import admin from 'firebase-admin'
 import * as auth from 'firebase-admin/auth'
 import { FirebaseAuthError } from './auth-error'
