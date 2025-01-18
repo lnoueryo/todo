@@ -3,9 +3,16 @@ import admin from 'firebase-admin'
 import { Task } from '~/server/domain/entities/task'
 
 export class TaskRepository implements ITaskRepository  {
-  constructor(private fireStore: admin.firestore.Firestore) {}
+  constructor(private fireStoreOrTransaction: admin.firestore.Firestore | admin.firestore.Transaction) {}
+
+  private getCollection() {
+    if (this.fireStoreOrTransaction instanceof admin.firestore.Transaction) {
+      return admin.firestore().collection('tasks');
+    }
+    return this.fireStoreOrTransaction.collection('tasks');
+  }
   async getByUserId(id: string): Promise<Task[]> {
-    const tasksRef = this.fireStore.collection('tasks').orderBy('order')
+    const tasksRef = this.getCollection().orderBy('order')
     const snapshot = await tasksRef.where('userId', '==', id).get()
     return snapshot.docs.map(doc => {
       const {
@@ -28,7 +35,7 @@ export class TaskRepository implements ITaskRepository  {
     })
   }
   async getByIds(ids: string[]): Promise<Task[]> {
-    const tasksRef = this.fireStore.collection('tasks').orderBy('order')
+    const tasksRef = this.getCollection().orderBy('order')
     const snapshot = await tasksRef.where(admin.firestore.FieldPath.documentId(), 'in', ids).get()
     return snapshot.docs.map(doc => {
       const {
@@ -51,7 +58,7 @@ export class TaskRepository implements ITaskRepository  {
     })
   }
   async getTaskByUserId(id: string): Promise<Task | null> {
-    const taskRef = this.fireStore.collection('tasks').doc(id)
+    const taskRef = this.getCollection().doc(id)
     const taskDoc = await taskRef.get()
     if (!taskDoc.exists) {
       return null
@@ -87,7 +94,7 @@ export class TaskRepository implements ITaskRepository  {
       createdAt,
       updatedAt,
     } = task
-    const newTask = await this.fireStore.collection('tasks').add({
+    const newTask = await this.getCollection().add({
       userId,
       active,
       content,
@@ -99,7 +106,7 @@ export class TaskRepository implements ITaskRepository  {
     return task
   }
   async updateTask(id: string, task: Task): Promise<admin.firestore.WriteResult> {
-    return this.fireStore.collection('tasks').doc(id).update({
+    return this.getCollection().doc(id).update({
       content: task.content,
       order: task.order,
       active: task.active,
@@ -107,7 +114,7 @@ export class TaskRepository implements ITaskRepository  {
     })
   }
   async deleteTask(id: string): Promise<void> {
-    const taskRef = this.fireStore.collection('tasks').doc(id)
+    const taskRef = this.getCollection().doc(id)
     await taskRef.delete()
   }
 }
