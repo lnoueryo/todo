@@ -8,14 +8,14 @@ import { getHttpStatus } from '~/server/interfaces/shared/http-status-mapper'
 
 export default defineEventHandler<
   Promise<
-  {
-    tasks: {
-      id: string
-      content: string
-      active: boolean
-      order: number
-    }[]
-  }
+    {
+      tasks: {
+        id: string
+        content: string
+        active: boolean
+        order: number
+      }[]
+    }
   >
 >(
   httpAuth(async(event, user) => {

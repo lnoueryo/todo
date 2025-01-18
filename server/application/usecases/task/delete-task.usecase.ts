@@ -1,7 +1,7 @@
 import { Task } from '~/server/domain/entities/task'
 import type { User } from '~/server/domain/entities/user'
 import { UsecaseResult } from '../../shared/usecase-result'
-import { ITransactionManager } from '~/server/domain/repositories/transaction-manager.repository';
+import { ITransactionManager } from '~/server/domain/repositories/transaction-manager.repository'
 
 export class DeleteTaskUsecase {
   constructor(private transactionManager: ITransactionManager) {}

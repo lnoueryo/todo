@@ -1,16 +1,11 @@
 import type { ITaskRepository } from '../../../domain/repositories/task.repository'
 import admin from 'firebase-admin'
 import { Task } from '~/server/domain/entities/task'
+import { BaseRepository } from './base.repository'
 
-export class TaskRepository implements ITaskRepository  {
-  constructor(private fireStoreOrTransaction: admin.firestore.Firestore | admin.firestore.Transaction) {}
+export class TaskRepository extends BaseRepository implements ITaskRepository  {
+  protected collectionName = 'tasks'
 
-  private getCollection() {
-    if (this.fireStoreOrTransaction instanceof admin.firestore.Transaction) {
-      return admin.firestore().collection('tasks');
-    }
-    return this.fireStoreOrTransaction.collection('tasks');
-  }
   async getByUserId(id: string): Promise<Task[]> {
     const tasksRef = this.getCollection().orderBy('order')
     const snapshot = await tasksRef.where('userId', '==', id).get()
@@ -105,8 +100,8 @@ export class TaskRepository implements ITaskRepository  {
     task.id = newTask.id
     return task
   }
-  async updateTask(id: string, task: Task): Promise<admin.firestore.WriteResult> {
-    return this.getCollection().doc(id).update({
+  async updateTask(id: string, task: Task): Promise<void> {
+    this.getCollection().doc(id).update({
       content: task.content,
       order: task.order,
       active: task.active,

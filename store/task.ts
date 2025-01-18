@@ -33,7 +33,6 @@ export const useTaskStore = defineStore(
     }
 
     const updateTasks = async (updateTasks: Task[]) => {
-      console.log(updateTasks)
       const res = await $taskRepository.updateTasks(updateTasks)
       tasks.value = res.tasks
     }

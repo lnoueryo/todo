@@ -8,14 +8,14 @@ import { FireStoreTransactionManager } from '~/server/infrastructure/firebase/fi
 
 export default defineEventHandler<
   Promise<
-  {
-    tasks: {
-      id: string
-      content: string
-      active: boolean
-      order: number
-    }[]
-  }
+    {
+      tasks: {
+        id: string
+        content: string
+        active: boolean
+        order: number
+      }[]
+    }
   >
 >(
   httpAuth(async(event, user) => {
