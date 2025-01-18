@@ -1,12 +1,19 @@
 import { Task } from '~/server/domain/entities/task'
-import { CreateTaskRequest } from '~/server/interfaces/dto/task/request/create-task-request.dto'
 import { User } from '~/server/domain/entities/user'
 import { UsecaseResult } from '../../shared/usecase-result'
 import { ITaskRepository } from '~/server/domain/repositories/task.repository'
 
 export class CreateTaskUsecase {
   constructor(private taskRepo: ITaskRepository) {}
-  public async execute(createTaskInput: CreateTaskRequest, user: User): Promise<
+  public async execute(
+    params: {
+      userId: string
+      content: string
+      active: boolean
+      order: number
+    },
+    user: User
+  ): Promise<
     UsecaseResult<
       {
         tasks: Task[]
@@ -15,7 +22,7 @@ export class CreateTaskUsecase {
     >
   > {
     try {
-      const task = new Task(createTaskInput.task)
+      const task = new Task(params)
       task.userId = user.id
       task.createdAt = new Date()
       task.updatedAt = new Date()

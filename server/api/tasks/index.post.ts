@@ -3,7 +3,6 @@ import { CreateTaskUsecase } from '~/server/application/usecases/task/create-tas
 import { fireStore } from '~/server/infrastructure/firebase-auth/firebase-admin'
 import { CreateTaskRequest } from '~/server/interfaces/dto/task/request/create-task-request.dto'
 import { httpAuth } from '~/server/interfaces/auth/http-auth'
-import { TaskOwnershipService } from '~/server/domain/services/task/task-ownership.service'
 import { GetTaskResponse } from '~/server/interfaces/dto/task/response/get-task-response.dto'
 import { getHttpStatus } from '~/server/interfaces/shared/http-status-mapper'
 
@@ -13,7 +12,7 @@ export default defineEventHandler(
     const createTaskInput = new CreateTaskRequest(body)
     const taskRepository = new TaskRepository(fireStore)
     const usecase = new CreateTaskUsecase(taskRepository)
-    const result = await usecase.execute(createTaskInput, user)
+    const result = await usecase.execute(createTaskInput.task, user)
     if ('error' in result) {
       throw createError({
         statusCode: getHttpStatus(result.error.type),

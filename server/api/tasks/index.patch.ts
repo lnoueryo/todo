@@ -17,7 +17,7 @@ export default defineEventHandler(
       taskOwnershipService,
       taskRepository,
     )
-    const result = await usecase.execute(updateTaskRequest, user)
+    const result = await usecase.execute(updateTaskRequest.tasks, user)
     if ('error' in result) {
       throw createError({
         statusCode: getHttpStatus(result.error.type),

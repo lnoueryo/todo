@@ -1,5 +1,4 @@
 import { Task } from '~/server/domain/entities/task'
-import { UpdateTaskRequest } from '~/server/interfaces/dto/task/request/update-task-request.dto'
 import { TaskOwnershipService } from '~/server/domain/services/task/task-ownership.service'
 import { User } from '~/server/domain/entities/user'
 import { UsecaseResult } from '../../shared/usecase-result'
@@ -10,7 +9,16 @@ export class UpdateTaskUsecase {
     private taskOwnershipService: TaskOwnershipService,
     private taskRepo: ITaskRepository,
   ) {}
-  public async execute(updateTaskRequest: UpdateTaskRequest, user: User): Promise<
+  public async execute(
+    params: {
+      id: string
+      userId: string
+      content: string
+      active: boolean
+      order: number
+    }[],
+    user: User
+  ): Promise<
     UsecaseResult<
       {
         tasks: Task[],
@@ -19,9 +27,9 @@ export class UpdateTaskUsecase {
     >
   > {
     try {
-      const areTasksCurrentUsers = this.taskOwnershipService.areTasksOwnedByUser(updateTaskRequest.getIds(), user)
+      const areTasksCurrentUsers = this.taskOwnershipService.areTasksOwnedByUser(params.map(task => task.id), user)
       if (!areTasksCurrentUsers) {
-        console.error(`user: ${user}\nrequest: ${updateTaskRequest.tasks}`)
+        console.error(`user: ${user}\nrequest: ${params}`)
         return {
           error: {
             type: 'forbidden',
@@ -29,7 +37,7 @@ export class UpdateTaskUsecase {
           }
         }
       }
-      const updateTasks = updateTaskRequest.tasks.map((taskData) => {
+      const updateTasks = params.map((taskData) => {
         const task = new Task(taskData)
         task.updatedAt = new Date()
         return this.taskRepo.updateTask(taskData.id, task)
